@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRED-TREE // Workflow &amp; Algorithmic Documentation — Loan Approval Prediction (Mohd Amir Ali)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    :root {
+      --navy: #0B132B;
+      --blue: #2563EB;
+      --emerald: #059669;
+      --ink: #0F172A;
+      --muted: #475569;
+      --border: #CBD5E1;
+      --bg: #F8FAFC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: var(--ink);
+      background: #E2E8F0;
+      line-height: 1.6;
+      padding: 28px 16px;
+    }
+    .toolbar {
+      max-width: 960px;
+      margin: 0 auto 18px;
+      background: var(--navy);
+      color: #FFF;
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn-print {
+      background: #38BDF8;
+      color: #0B132B;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .sheet {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      padding: 46px 52px;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(11,19,43,0.12);
+    }
+    h1 { font-size: 2rem; font-weight: 800; line-height: 1.15; margin-bottom: 8px; color: var(--navy); }
+    h2 { font-size: 1.25rem; font-weight: 800; color: var(--navy); margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--navy); }
+    h3 { font-size: 1rem; font-weight: 800; color: var(--blue); margin: 14px 0 6px; }
+    p, li { font-size: 0.9rem; color: var(--ink); margin-bottom: 8px; }
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: #F1F5F9; padding: 2px 6px; border-radius: 4px; }
+    .math-box {
+      background: var(--navy);
+      color: #38BDF8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin: 10px 0 14px;
+      line-height: 1.65;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 0.84rem; }
+    th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; }
+    th { background: #F1F5F9; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform: uppercase; }
+    @media print {
+      body { background: #FFF; padding: 0; }
+      .toolbar { display: none; }
+      .sheet { box-shadow: none; padding: 20px; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;">
+      <strong>CRED-TREE // WORKFLOW &amp; ALGORITHMIC DOCUMENTATION</strong> · Mohd Amir Ali (160920733019)
+    </div>
+    <div style="display:flex;gap:10px;">
+      <a href="index.html" style="color:#CBD5E1;font-size:0.8rem;text-decoration:underline;align-self:center;">← Back to Interactive WebApp</a>
+      <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+  </div>
+
+  <article class="sheet">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--blue);font-weight:700;letter-spacing:0.1em;margin-bottom:6px;">
+      DATA SCIENCE INTERNSHIP TECHNICAL MONOGRAPH · DELTA SIGMA TECHNOLOGIES &amp; CEPHEI CONSULTANTS (AUSTRALIA)
+    </div>
+    <h1>Automated Loan Approval Prediction &amp; Explainable Credit Risk Underwriting via Pruned CART Decision Trees</h1>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:18px;">
+      <strong>Author:</strong> Mohd Amir Ali (Roll No: <code>160920733019</code>) · B.E. Computer Science &amp; Engineering, Lords Institute of Engineering &amp; Technology (Osmania University, Hyderabad) · <strong>Portfolio:</strong> <a href="https://techwithamir.com">techwithamir.com</a> · <strong>Certificate ID:</strong> <code>23DST1DSI22</code>
+    </p>
+
+    <h2>1. Executive Overview &amp; Problem Statement</h2>
+    <p>
+      Retail banks and housing finance institutions evaluate thousands of loan applications daily. Manual underwriting is slow, inconsistent, and vulnerable to subjective human bias, whereas black-box deep learning models violate banking transparency mandates (Basel II/III Internal Ratings-Based guidelines and Equal Credit Opportunity adverse-action disclosure laws).
+    </p>
+    <p>
+      This project implements an explainable, automated credit risk underwriting platform powered by a <strong>Best-First Pruned CART Decision Tree Classifier (<code>DecisionTreeClassifier(max_leaf_nodes=25, criterion='gini')</code>)</strong> trained on <strong>614 historical loan applications</strong> (<code>LoanApprovalPrediction.csv</code>). The model achieves <strong>86.56% Training Accuracy</strong> and <strong>82.80% Testing Accuracy</strong> (<code>85:15</code> split, <code>random_state=5</code>) while providing an exact root-to-leaf boolean decision trace, monthly EMI and Fixed Obligation to Income Ratio (FOIR) stress testing, and counterfactual recommendations.
+    </p>
+
+    <h2>2. Core Machine Learning Algorithm &amp; Mathematical Formulation</h2>
+    <h3>2.1 Why CART Decision Tree (<code>DecisionTreeClassifier</code>) for Credit Risk?</h3>
+    <ul>
+      <li><strong>White-Box Regulatory Auditability:</strong> Every approval or rejection is traced through explicit boolean rules (e.g., <code>Credit_History &le; 0.5</code> &rarr; <code>LoanAmount &le; 310k</code> &rarr; <code>FOIR &le; 55%</code>), satisfying mandatory borrower adverse-action disclosures.</li>
+      <li><strong>Non-Linear Conditional Interactions:</strong> A high loan amount is risky for a low single income, yet safe for a dual-income household with a clean bureau record. Hierarchical tree splits capture these conditional interactions natively.</li>
+      <li><strong>Invariance to Income Skewness:</strong> Retail income distributions are heavily right-skewed; CART threshold splits depend only on rank order and do not suffer from parametric distortion.</li>
+    </ul>
+
+    <h3>2.2 Gini Impurity &amp; Information Gain Equations</h3>
+    <div class="math-box">
+      1. Node Gini Impurity: G(t) = 1 − ∑ [ p(c | t) ]² = 1 − (p₁² + p₀²)<br/>
+      &nbsp;&nbsp;&nbsp;• Root Node (N₀ = 614: 422 Approved [68.73%], 192 Rejected [31.27%]):<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;G(Root) = 1 − (0.6873² + 0.3127²) = 1 − (0.4724 + 0.0978) = 0.4298<br/><br/>
+      2. Gini Impurity Reduction (Information Gain ΔG):<br/>
+      &nbsp;&nbsp;&nbsp;ΔG(t, f, θ) = G(t) − [ (N_L / N_t)·G(t_L) + (N_R / N_t)·G(t_R) ]<br/>
+      &nbsp;&nbsp;&nbsp;• Root Split on Credit_History ≤ 0.5:<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Left Child (CH=0, N_L=89: 7 Approved, 82 Rejected) ➔ G(t_L) = 0.1449<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right Child (CH=1, N_R=525: 415 Approved, 110 Rejected) ➔ G(t_R) = 0.3312<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ΔG = 0.4298 − [ (89/614)(0.1449) + (525/614)(0.3312) ] = 0.4298 − 0.3042 = +0.1256
+    </div>
+
+    <h3>2.3 Best-First Leaf-Node Pruning (<code>max_leaf_nodes=25</code>)</h3>
+    <p>
+      To prevent overfitting on noisy individual borrower records, the tree growth is constrained to <code>max_leaf_nodes=25</code> (and cross-checked with <code>max_depth=5, min_samples_leaf=5</code>). Using a priority queue ordered by weighted impurity reduction <i>N<sub>t</sub> · &Delta;G(t)</i>, only the 24 most statistically significant credit splits are retained.
+    </p>
+
+    <h2>3. Fair-Lending Feature Engineering &amp; Preprocessing Pipeline</h2>
+    <p>
+      From the 13 raw columns in <code>LoanApprovalPrediction.csv</code>, 3 columns are deliberately excluded prior to training:
+    </p>
+    <ul>
+      <li><code>Loan_ID</code>: Alphanumeric primary key (<code>LP001002</code>–<code>LP002990</code>) with zero predictive generalization.</li>
+      <li><code>Gender</code> &amp; <code>Married</code>: Excluded (`df.drop(["Gender", "Married"], axis=1)`) to enforce <strong>Fair-Lending &amp; Equal Credit Opportunity compliance</strong>. Empirical correlation analysis confirms near-zero linear relationship with loan approval (<code>r = 0.02</code> and <code>r = 0.09</code>), while household earning strength is captured objectively via <code>CoapplicantIncome</code>.</li>
+    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Form Input</th>
+          <th>Feature Name</th>
+          <th>Encoding / Scale</th>
+          <th>Gini Weight</th>
+          <th>Underwriting Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>box8</code></td><td><strong>Credit_History</strong></td><td><code>1</code> = Good, <code>0</code> = Bad</td><td>56.4%</td><td>Root Node 0 Splitter (79.6% vs 7.9% approval)</td></tr>
+        <tr><td><code>box4</code></td><td><strong>ApplicantIncome</strong></td><td>Continuous Monthly ($ / ₹)</td><td>16.8%</td><td>Primary debt-service capacity (r = +0.53 w/ LoanAmount)</td></tr>
+        <tr><td><code>box6</code></td><td><strong>LoanAmount</strong></td><td>Thousands (e.g. 150 = 150k)</td><td>12.4%</td><td>Node 2 &amp; Node 6 exposure threshold</td></tr>
+        <tr><td><code>box5</code></td><td><strong>CoapplicantIncome</strong></td><td>Continuous Monthly ($ / ₹)</td><td>6.2%</td><td>Secondary household repayment buffer</td></tr>
+        <tr><td><code>box9</code></td><td><strong>Property_Area</strong></td><td><code>0</code>=Rural, <code>1</code>=Semiurban, <code>2</code>=Urban</td><td>3.8%</td><td>Collateral liquidity (Semiurban highest at 76.8%)</td></tr>
+        <tr><td><code>box7</code></td><td><strong>Loan_Amount_Term</strong></td><td>Months (360 standard)</td><td>2.2%</td><td>Amortization horizon for monthly EMI</td></tr>
+        <tr><td><code>box1–3</code></td><td><strong>Dependents, Education, Self_Employed</strong></td><td>Categorical Encoded</td><td>2.2%</td><td>Terminal leaf probability refinement</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. Multi-Model Evaluation Benchmark (85% Train / 15% Test · <code>random_state=5</code>)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Model Architecture</th>
+          <th>Train Acc</th>
+          <th>Test Acc</th>
+          <th>Precision</th>
+          <th>Recall</th>
+          <th>F1-Score</th>
+          <th>Explainability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>CART Decision Tree (<code>max_leaf_nodes=25</code>) [Deployed]</strong></td>
+          <td><strong>86.56%</strong></td>
+          <td><strong>82.80%</strong></td>
+          <td>84.10%</td>
+          <td>93.85%</td>
+          <td><strong>88.71%</strong></td>
+          <td>100% White-Box Gini Path</td>
+        </tr>
+        <tr>
+          <td>CART Decision Tree (<code>max_depth=5, min_samples_leaf=5</code>)</td>
+          <td>84.84%</td>
+          <td>81.72%</td>
+          <td>83.10%</td>
+          <td>92.31%</td>
+          <td>87.46%</td>
+          <td>100% White-Box</td>
+        </tr>
+        <tr>
+          <td>Random Forest Classifier (100 Trees)</td>
+          <td>92.13%</td>
+          <td>81.72%</td>
+          <td>83.82%</td>
+          <td>90.77%</td>
+          <td>87.16%</td>
+          <td>Medium (Ensemble)</td>
+        </tr>
+        <tr>
+          <td>Gradient Boosting / XGBoost</td>
+          <td>89.44%</td>
+          <td>80.65%</td>
+          <td>82.61%</td>
+          <td>90.77%</td>
+          <td>86.50%</td>
+          <td>Low (Post-Hoc SHAP)</td>
+        </tr>
+        <tr>
+          <td>Logistic Regression (Basel II Baseline)</td>
+          <td>81.19%</td>
+          <td>80.65%</td>
+          <td>80.52%</td>
+          <td>95.38%</td>
+          <td>87.32%</td>
+          <td>High (Linear Only)</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+</body>
+</html>
