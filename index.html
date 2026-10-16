@@ -3,31 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LOAN APPROVAL PREDICTION MODEL — Decision Tree Classifier Workbench | Mohd Amir Ali</title>
+  <title>LOAN APPROVAL PREDICTION MODEL — Decision Tree Classifier | Mohd Amir Ali</title>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Distinct Warm Paper & Quantitative Data Science Workbench Palette */
-  --bg-canvas: #F7F7F5;          /* Warm Technical Graph Paper Surface */
-  --bg-panel: #FFFFFF;           /* Crisp White Module Card */
-  --bg-muted: #EFECE6;           /* Warm Stone Header/Tag Fill */
-  --sidebar-bg: #111318;         /* Deep Graphite Data Science Sidebar */
-  --sidebar-card: #1B1F27;       /* Sidebar Inner Box */
-  --accent-indigo: #3B49DF;      /* Quantitative Royal Indigo */
-  --accent-indigo-soft: #EEF0FF;
-  --approve-teal: #0D9488;       /* Teal-Emerald Approved Node */
-  --approve-bg: #CCFBF1;
-  --reject-rose: #E11D48;        /* Rose-Crimson Rejected Node */
-  --reject-bg: #FFE4E6;
-  --amber-node: #D97706;
-  --ink-main: #111827;
-  --ink-body: #374151;
-  --ink-dim: #6B7280;
-  --border-line: #E2E0D8;
-  --border-heavy: #C8C4B8;
-  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bg-page: #F4F6FB;            /* Soft Alabaster-Slate Background */
+  --bg-card: #FFFFFF;            /* Pure White Card Surface */
+  --bg-subtle: #EDF1F7;          /* Light Slate Pill Surface */
+  --ink-navy: #0F172A;           /* Primary Heading Slate-Navy */
+  --ink-body: #334155;           /* Readable Body Slate */
+  --ink-muted: #64748B;          /* Muted Caption Slate */
+  --indigo-primary: #3B49DF;     /* Royal Indigo Primary Accent */
+  --indigo-soft: #EEF2FF;        /* Soft Indigo Tint */
+  --teal-approve: #0D9488;       /* Teal-Emerald Approved Accent */
+  --teal-soft: #CCFBF1;
+  --rose-reject: #E11D48;        /* Rose-Crimson Rejected Accent */
+  --rose-soft: #FFE4E6;
+  --amber-warn: #D97706;
+  --border-light: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --shadow-clean: 0 8px 26px -6px rgba(15, 23, 42, 0.06);
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Newsreader', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -38,970 +38,1054 @@
 }
 
 html, body {
-  background-color: var(--bg-canvas);
-  background-image: radial-gradient(#D8D5CA 1px, transparent 1px);
-  background-size: 22px 22px;
-  color: var(--ink-main);
+  background-color: var(--bg-page);
+  color: var(--ink-navy);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  line-height: 1.55;
+  line-height: 1.6;
   min-height: 100vh;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: all 0.18s ease;
 }
 
 /* ==========================================================================
-   APP SHELL: LEFT FIXED COMMAND SIDEBAR + RIGHT MODULAR WORKSPACE
-   (Completely distinct from Healthy Mode's top-nav + hero layout)
+   TOP ATTRIBUTION BAR & CLEAN STICKY HEADER (Matches User's Preferred Style)
    ========================================================================== */
-.ds-workbench-shell {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  min-height: 100vh;
+.top-context-strip {
+  background-color: var(--ink-navy);
+  color: #CBD5E1;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 9px 32px;
 }
 
-@media (max-width: 1060px) {
-  .ds-workbench-shell {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Left Vertical Command Sidebar */
-.ds-sidebar {
-  background-color: var(--sidebar-bg);
-  color: #F3F4F6;
-  padding: 26px 22px;
+.top-context-inner {
+  max-width: 1340px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
-  border-right: 1px solid #262B36;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-@media (max-width: 1060px) {
-  .ds-sidebar {
-    position: relative;
-    height: auto;
-  }
-}
-
-.sidebar-badge {
+.context-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(59, 73, 223, 0.22);
+  background: rgba(59, 73, 223, 0.35);
   color: #93C5FD;
-  border: 1px solid rgba(147, 197, 253, 0.3);
-  margin-bottom: 12px;
-}
-
-.sidebar-project-title {
-  font-family: var(--font-display);
-  font-size: 1.28rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(147, 197, 253, 0.35);
   font-weight: 700;
-  line-height: 1.18;
-  color: #FFFFFF;
-  letter-spacing: -0.02em;
-  margin-bottom: 6px;
 }
 
-.sidebar-project-sub {
-  font-size: 0.78rem;
-  color: #9CA3AF;
-  line-height: 1.45;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #262B36;
+.site-header {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.sidebar-nav-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #6B7280;
-  margin-bottom: 8px;
-}
-
-.sidebar-nav-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 22px;
-}
-
-.sidebar-nav-btn {
+.header-inner {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 15px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  text-align: left;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: transparent;
-  color: #D1D5DB;
-  border: 1px solid transparent;
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
-.sidebar-nav-btn:hover {
-  background: var(--sidebar-card);
-  color: #FFFFFF;
-}
-
-.sidebar-nav-btn.active {
-  background: var(--accent-indigo);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(59, 73, 223, 0.35);
-}
-
-.sidebar-preset-card {
-  background: var(--sidebar-card);
-  border: 1px solid #2D3340;
+.brand-badge {
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 18px;
+  background: var(--indigo-primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.92rem;
 }
 
-.preset-chip-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 8px 10px;
-  border-radius: 7px;
-  background: #12151B;
-  color: #E5E7EB;
-  border: 1px solid #2D3340;
-  font-size: 0.76rem;
-  font-weight: 600;
-  margin-bottom: 6px;
+.brand-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--ink-navy);
+  letter-spacing: -0.01em;
+}
+
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nav-pill {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--ink-body);
+  padding: 8px 15px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
-.preset-chip-btn:last-child {
-  margin-bottom: 0;
+.nav-pill:hover {
+  background-color: var(--bg-subtle);
 }
 
-.preset-chip-btn:hover, .preset-chip-btn.active {
-  border-color: #60A5FA;
-  background: rgba(59, 73, 223, 0.25);
+.nav-pill.active {
+  background-color: var(--indigo-primary);
+  color: #FFFFFF;
+}
+
+.nav-report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink-navy);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--ink-navy);
+}
+
+.nav-report-btn:hover {
+  background-color: var(--ink-navy);
   color: #FFFFFF;
 }
 
 /* ==========================================================================
-   RIGHT WORKSPACE CONTENT AREA & TOP PROJECT TITLE HEADER
+   MAIN PAGE CONTAINER & CLEAN PROJECT MASTHEAD
    ========================================================================== */
-.ds-main-workspace {
-  padding: 28px 36px 72px;
-  max-width: 1280px;
+.page-container {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 28px 32px 72px;
 }
 
 @media (max-width: 768px) {
-  .ds-main-workspace {
+  .page-container {
     padding: 20px 16px 56px;
   }
 }
 
-.report-masthead {
-  background: var(--bg-panel);
-  border: 2px solid var(--ink-main);
-  border-radius: 14px;
-  padding: 24px 28px;
-  margin-bottom: 22px;
-  box-shadow: 5px 5px 0px var(--ink-main);
+.project-masthead-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-top: 4px solid var(--indigo-primary);
+  border-radius: var(--radius-lg);
+  padding: 28px 34px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-clean);
+}
+
+.masthead-top-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 18px;
 }
 
-.masthead-kicker {
+.kicker-tag {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.71rem;
   font-weight: 700;
-  color: var(--accent-indigo);
-  text-transform: uppercase;
+  color: var(--indigo-primary);
   letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.masthead-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3vw, 2.45rem);
-  font-weight: 700;
-  color: var(--ink-main);
-  letter-spacing: -0.025em;
-  line-height: 1.08;
-}
-
-.masthead-subtitle {
-  font-size: 0.94rem;
-  color: var(--ink-body);
-  margin-top: 6px;
-  max-width: 760px;
-}
-
-/* ==========================================================================
-   HORIZONTAL LIVE VERDICT & FINANCIAL METRICS RIBBON
-   ========================================================================== */
-.verdict-ribbon {
-  background: var(--bg-panel);
-  border: 2px solid var(--ink-main);
-  border-radius: 14px;
-  padding: 18px 24px;
-  margin-bottom: 22px;
-  display: grid;
-  grid-template-columns: 1.3fr repeat(4, 1fr);
-  gap: 16px;
-  align-items: center;
-}
-
-@media (max-width: 980px) {
-  .verdict-ribbon {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.verdict-stamp-box {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding-right: 16px;
-  border-right: 1.5px dashed var(--border-heavy);
-}
-
-.stamp-badge {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 10px;
-  border: 2px solid currentColor;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.stamp-badge.approved {
-  color: var(--approve-teal);
-  background: var(--approve-bg);
-}
-
-.stamp-badge.rejected {
-  color: var(--reject-rose);
-  background: var(--reject-bg);
-}
-
-.ribbon-metric {
-  padding: 4px 8px;
-}
-
-.ribbon-metric .m-lbl {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 700;
   text-transform: uppercase;
-  color: var(--ink-dim);
-  letter-spacing: 0.06em;
+  margin-bottom: 6px;
 }
 
-.ribbon-metric .m-val {
+.project-main-heading {
+  font-size: clamp(1.85rem, 3.2vw, 2.55rem);
+  font-weight: 800;
+  color: var(--ink-navy);
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+.project-sub-heading {
+  font-size: 0.96rem;
+  color: var(--ink-body);
+  margin-top: 8px;
+  max-width: 820px;
+  line-height: 1.55;
+}
+
+.accuracy-badges {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.acc-box {
+  background: var(--bg-page);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 118px;
+}
+
+.acc-box .lbl {
   font-family: var(--font-mono);
-  font-size: 1.18rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  color: var(--ink-main);
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+
+.acc-box .val {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--ink-navy);
   margin-top: 2px;
 }
 
-.ribbon-metric .m-sub {
-  font-size: 0.72rem;
-  color: var(--ink-dim);
+/* Preset Test-Case Bar */
+.preset-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-page);
+  color: var(--ink-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-btn:hover {
+  border-color: var(--indigo-primary);
+  color: var(--indigo-primary);
+}
+
+.preset-btn.active {
+  background: var(--indigo-soft);
+  border-color: var(--indigo-primary);
+  color: var(--indigo-primary);
 }
 
 /* ==========================================================================
-   3-COLUMN BORROWER INPUT PARAMETER DECK
+   TWO-COLUMN UNDERWRITING WORKBENCH (Generous Spacing, Zero Clipped Selects)
    ========================================================================== */
-.input-deck-grid {
+.workbench-two-col {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 24px;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 26px;
 }
 
 @media (max-width: 1020px) {
-  .input-deck-grid {
+  .workbench-two-col {
     grid-template-columns: 1fr;
   }
 }
 
-.deck-card {
-  background: var(--bg-panel);
-  border: 1.5px solid var(--border-heavy);
-  border-radius: 12px;
-  padding: 20px 22px;
+.clean-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 26px 30px;
+  box-shadow: var(--shadow-clean);
+  margin-bottom: 26px;
 }
 
-.deck-card-header {
+.card-header-line {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: space-between;
-  padding-bottom: 10px;
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--border-line);
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.deck-step-num {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--accent-indigo-soft);
-  color: var(--accent-indigo);
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 18px;
 }
 
-.field-group {
-  margin-bottom: 13px;
+@media (max-width: 640px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
 }
 
-.field-group:last-child {
-  margin-bottom: 0;
-}
-
-.field-label {
+.field-item {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-item label {
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--ink-body);
-  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.custom-select {
+.clean-select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   width: 100%;
-  padding: 9px 38px 9px 12px;
-  border-radius: 8px;
-  border: 1.5px solid var(--border-heavy);
-  background-color: var(--bg-canvas);
-  color: var(--ink-main);
+  padding: 11px 42px 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-strong);
+  background-color: var(--bg-page);
+  color: var(--ink-navy);
   font-family: var(--font-sans);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%23111827' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230F172A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 15px 15px;
+  background-position: right 14px center;
+  background-size: 16px 16px;
 }
 
-.custom-select:focus, .custom-num-input:focus {
+.clean-select:focus, .clean-num:focus {
   outline: none;
-  border-color: var(--accent-indigo);
+  border-color: var(--indigo-primary);
   background-color: #FFFFFF;
   box-shadow: 0 0 0 3px rgba(59, 73, 223, 0.14);
 }
 
-.custom-num-input {
+.clean-num {
   width: 100%;
-  padding: 7px 10px;
-  border-radius: 7px;
-  border: 1.5px solid var(--border-heavy);
-  background-color: var(--bg-canvas);
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-strong);
+  background-color: #FFFFFF;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  color: var(--ink-main);
+  color: var(--ink-navy);
 }
 
-input[type="range"].ds-slider {
+input[type="range"].clean-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 6px;
-  background: #D5D2C8;
+  background: #CBD5E1;
   border-radius: 999px;
   outline: none;
   cursor: pointer;
 }
 
-input[type="range"].ds-slider::-webkit-slider-thumb {
+input[type="range"].clean-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: var(--accent-indigo);
-  border: 2px solid #FFFFFF;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  background: var(--indigo-primary);
+  border: 2.5px solid #FFFFFF;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.25);
   cursor: pointer;
+}
+
+/* Right Column: Clean White-Mode Institutional Verdict Card */
+.verdict-panel-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-clean);
+}
+
+.verdict-banner-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  border: 1.5px solid currentColor;
+}
+
+.verdict-banner-box.approved {
+  background-color: var(--teal-soft);
+  color: #0F766E;
+}
+
+.verdict-banner-box.rejected {
+  background-color: var(--rose-soft);
+  color: #BE123C;
+}
+
+.metrics-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.metric-tile {
+  background: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.metric-tile .lbl {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+
+.metric-tile .val {
+  font-family: var(--font-mono);
+  font-size: 1.14rem;
+  font-weight: 800;
+  color: var(--ink-navy);
+  margin-top: 2px;
 }
 
 /* ==========================================================================
-   FULL-WIDTH INTERACTIVE VISUAL DECISION TREE CANVAS (SVG TREE DIAGRAM)
+   FULL-WIDTH INTERACTIVE VISUAL DECISION TREE SECTION (ZERO OVERLAP)
    ========================================================================== */
-.visual-tree-stage {
-  background: var(--bg-panel);
-  border: 2px solid var(--ink-main);
-  border-radius: 14px;
-  padding: 24px 26px;
-  margin-bottom: 24px;
-  box-shadow: 5px 5px 0px var(--ink-main);
-}
-
-.tree-svg-wrapper {
+.tree-canvas-frame {
   width: 100%;
   overflow-x: auto;
-  background: #FAF9F5;
-  border: 1.5px solid var(--border-line);
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 14px;
-  margin-bottom: 16px;
+  background: #F8FAFC;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 20px;
+  margin: 16px 0 20px;
 }
 
-.svg-tree-node {
+.svg-node-group {
   cursor: pointer;
-  transition: transform 0.15s ease;
 }
 
-/* Step-by-Step Mathematical Working Ledger Below Tree */
-.math-ledger-grid {
+.inspector-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 14px;
+  gap: 18px;
 }
 
-@media (max-width: 920px) {
-  .math-ledger-grid {
+@media (max-width: 900px) {
+  .inspector-two-col {
     grid-template-columns: 1fr;
   }
 }
 
-.math-formula-card {
-  background: #111318;
-  color: #F3F4F6;
-  border-radius: 10px;
-  padding: 16px 18px;
+.code-ledger-box {
+  background: var(--ink-navy);
+  color: #F8FAFC;
+  border-radius: 12px;
+  padding: 18px 20px;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.65;
+  font-size: 0.76rem;
+  line-height: 1.7;
 }
 
 /* Data Tables */
-.ds-table {
+.clean-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
-  border: 1.5px solid var(--border-heavy);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.87rem;
 }
 
-.ds-table th {
-  background: var(--bg-muted);
+.clean-table th {
+  background: var(--bg-subtle);
   text-align: left;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-family: var(--font-mono);
   font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border-bottom: 1.5px solid var(--border-heavy);
+  color: var(--ink-body);
+  border-bottom: 1px solid var(--border-strong);
 }
 
-.ds-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border-line);
+.clean-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .mono {
   font-family: var(--font-mono);
 }
 
+.site-footer {
+  border-top: 1px solid var(--border-strong);
+  margin-top: 52px;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
   </style>
 </head>
 <body>
 
-  <div class="ds-workbench-shell">
-
-    <!-- =====================================================================
-         LEFT FIXED COMMAND SIDEBAR (Data Science Studio Architecture)
-         ===================================================================== -->
-    <aside class="ds-sidebar">
+  <!-- Top Attribution Bar (Consistent with Portfolio Projects) -->
+  <div class="top-context-strip">
+    <div class="top-context-inner">
       <div>
-        <div class="sidebar-badge">● DATA SCIENCE INTERNSHIP</div>
-        <div class="sidebar-project-title">LOAN APPROVAL PREDICTION MODEL</div>
-        <div class="sidebar-project-sub">
-          Supervised Classification via Pruned CART Decision Tree (<code>DecisionTreeClassifier(max_leaf_nodes=25)</code>) · Delta Sigma Technologies &amp; Cephei Consultants
-        </div>
-
-        <div class="sidebar-nav-label">WORKBENCH MODULES</div>
-        <div class="sidebar-nav-list">
-          <button type="button" class="sidebar-nav-btn active" id="snav-workbench" onclick="scrollToSection('sec-workbench', this)">
-            <span>§1. Applicant Input Console</span>
-            <span class="mono" style="font-size:0.7rem;opacity:0.75;">box1–9</span>
-          </button>
-          <button type="button" class="sidebar-nav-btn" id="snav-tree" onclick="scrollToSection('sec-visual-tree', this)">
-            <span>§2. Visual Decision Tree</span>
-            <span class="mono" style="font-size:0.7rem;color:#34D399;">LIVE SVG</span>
-          </button>
-          <button type="button" class="sidebar-nav-btn" id="snav-math" onclick="scrollToSection('sec-algorithm-math', this)">
-            <span>§3. CART Algorithm &amp; Math</span>
-            <span class="mono" style="font-size:0.7rem;opacity:0.75;">Gini</span>
-          </button>
-          <button type="button" class="sidebar-nav-btn" id="snav-eda" onclick="scrollToSection('sec-eda-benchmark', this)">
-            <span>§4. EDA &amp; Model Benchmark</span>
-            <span class="mono" style="font-size:0.7rem;opacity:0.75;">n=614</span>
-          </button>
-        </div>
-
-        <div class="sidebar-nav-label">VERIFIED REPORT TEST CASES</div>
-        <div class="sidebar-preset-card">
-          <button type="button" id="pre-report_approved_p30" class="preset-chip-btn active" onclick="loadApplicantPreset('report_approved_p30')">
-            <div style="color:#34D399;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;">✓ REPORT CHAPTER 7 (PAGE 30)</div>
-            <div>Verified Approved Borrower ($5k + $2k Inc, $150k Loan, Good Credit)</div>
-          </button>
-          <button type="button" id="pre-report_rejected_p31" class="preset-chip-btn" onclick="loadApplicantPreset('report_rejected_p31')">
-            <div style="color:#FB7185;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;">✕ REPORT CHAPTER 7 (PAGE 31)</div>
-            <div>Verified Rejected Borrower (3+ Dep, $5k Inc, Bad Credit History = 0)</div>
-          </button>
-          <button type="button" id="pre-semiurban_prime_family" class="preset-chip-btn" onclick="loadApplicantPreset('semiurban_prime_family')">
-            <div style="color:#34D399;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;">✓ DATASET RECORD LP001011</div>
-            <div>Dual-Income Semiurban Graduate ($9,613 Combined Income, $267k Loan)</div>
-          </button>
-          <button type="button" id="pre-overleveraged_good_credit" class="preset-chip-btn" onclick="loadApplicantPreset('overleveraged_good_credit')">
-            <div style="color:#FBBF24;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;">⚠ NON-LINEAR TREE PRUNING CASE</div>
-            <div>Good Credit (1) Rejected at Node 6 due to High Debt-to-Income ($480k Loan)</div>
-          </button>
-        </div>
-
-        <a href="Printable_Documentation.html" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;border-radius:8px;background:#262B36;color:#FFF;font-family:var(--font-mono);font-size:0.74rem;font-weight:700;border:1px solid #374151;">
-          📄 Open Printable PDF Report ↗
-        </a>
+        <span class="context-badge">● DATA SCIENCE INTERNSHIP PROJECT</span>
+        &nbsp;DELTA SIGMA TECHNOLOGIES &amp; CEPHEI CONSULTANTS (AUSTRALIA) · CERT ID: <code>23DST1DSI22</code>
       </div>
-
-      <div style="padding-top: 18px; border-top: 1px solid #262B36; font-family: var(--font-mono); font-size: 0.66rem; color: #9CA3AF; line-height: 1.6;">
-        <div style="color:#FFF;font-weight:700;">MOHD AMIR ALI (160920733019)</div>
-        <div>Lords Institute of Engg. &amp; Tech</div>
-        <div>Cert ID: <code>23DST1DSI22</code></div>
-        <div style="margin-top:4px;">
-          <a href="https://techwithamir.com" target="_blank" style="color:#93C5FD;text-decoration:underline;">techwithamir.com ↗</a>
-        </div>
+      <div>
+        ENGINEERED BY <strong>MOHD AMIR ALI (160920733019)</strong> · LIET (OSMANIA UNIVERSITY) &nbsp;|&nbsp;
+        <a href="https://techwithamir.com" target="_blank" style="color: #93C5FD; text-decoration: underline; font-weight: 700;">TECHWITHAMIR.COM ↗</a>
       </div>
-    </aside>
+    </div>
+  </div>
+
+  <!-- Sticky Main Header (Clean & Familiar Navigation) -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#sec-top" class="brand-lockup">
+        <div class="brand-badge">DT</div>
+        <div>
+          <div class="brand-title">LOAN APPROVAL PREDICTION MODEL</div>
+          <div class="brand-sub">CART Decision Tree Classifier · Data Science Internship</div>
+        </div>
+      </a>
+
+      <nav class="header-nav">
+        <a href="#sec-predictor" class="nav-pill active">01. Loan Predictor</a>
+        <a href="#sec-tree-visualizer" class="nav-pill">02. Interactive Decision Tree</a>
+        <a href="#sec-algorithm" class="nav-pill">03. Algorithm &amp; Math</a>
+        <a href="#sec-benchmarks" class="nav-pill">04. EDA &amp; Evaluation</a>
+        <a href="Printable_Documentation.html" class="nav-report-btn">📄 Read Full Report ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-container" id="sec-top">
 
     <!-- =====================================================================
-         RIGHT MAIN MODULAR WORKSPACE
+         MASTHEAD CARD: EXACT INTERNSHIP REPORT HEADING & TEST CASE PRESETS
          ===================================================================== -->
-    <main class="ds-main-workspace">
-
-      <!-- Masthead with Exact Internship Report Heading & Subheading -->
-      <header class="report-masthead" id="sec-workbench">
+    <section class="project-masthead-card" id="sec-predictor">
+      <div class="masthead-top-row">
         <div>
-          <div class="masthead-kicker">
-            OSMANIA UNIVERSITY · B.E. CSE DATA SCIENCE INTERNSHIP PROJECT (DELTA SIGMA TECHNOLOGIES &amp; CEPHEI CONSULTANTS)
+          <div class="kicker-tag">
+            DEPARTMENT OF CSE · LORDS INSTITUTE OF ENGINEERING &amp; TECHNOLOGY (OSMANIA UNIVERSITY)
           </div>
-          <h1 class="masthead-title">LOAN APPROVAL PREDICTION MODEL</h1>
-          <p class="masthead-subtitle">
-            Automated Credit Risk Evaluation, Fair-Lending Feature Engineering &amp; Explainable Borrowers' Eligibility System Powered by a Pruned <strong>CART Decision Tree Classifier (<code>max_leaf_nodes=25</code>)</strong>
+          <h1 class="project-main-heading">LOAN APPROVAL PREDICTION MODEL</h1>
+          <p class="project-sub-heading">
+            An Explainable Machine Learning Credit Underwriting System utilizing the <strong>CART Decision Tree Classifier (<code>DecisionTreeClassifier(max_leaf_nodes=25, criterion='gini')</code>)</strong> trained on <strong>614 historical loan applications</strong> to automate fair, transparent approval decisions.
           </p>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <div style="background:var(--bg-muted);border:1.5px solid var(--border-heavy);border-radius:10px;padding:8px 14px;text-align:center;font-family:var(--font-mono);">
-            <div style="font-size:0.64rem;color:var(--ink-dim);">TRAINING ACCURACY</div>
-            <div style="font-size:1.05rem;font-weight:700;color:var(--ink-main);">86.56%</div>
+
+        <div class="accuracy-badges">
+          <div class="acc-box">
+            <div class="lbl">TRAIN ACCURACY</div>
+            <div class="val">86.56%</div>
           </div>
-          <div style="background:var(--bg-muted);border:1.5px solid var(--border-heavy);border-radius:10px;padding:8px 14px;text-align:center;font-family:var(--font-mono);">
-            <div style="font-size:0.64rem;color:var(--ink-dim);">TESTING ACCURACY</div>
-            <div style="font-size:1.05rem;font-weight:700;color:var(--approve-teal);">82.80%</div>
+          <div class="acc-box">
+            <div class="lbl">TEST ACCURACY</div>
+            <div class="val" style="color: var(--teal-approve);">82.80%</div>
+          </div>
+          <div class="acc-box">
+            <div class="lbl">DATASET SIZE</div>
+            <div class="val" style="color: var(--indigo-primary);">614 Loans</div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <!-- Top Horizontal Live Underwriting Verdict & Financial Telemetry Ribbon -->
-      <section class="verdict-ribbon">
-        <div class="verdict-stamp-box">
-          <div id="verdict-stamp" class="stamp-badge approved">✓ APPROVED</div>
+      <!-- One-Click Report Benchmark Presets -->
+      <div class="preset-bar">
+        <span class="mono" style="font-size: 0.72rem; font-weight: 700; color: var(--ink-muted); margin-right: 4px;">
+          LOAD TEST CASE:
+        </span>
+        <button type="button" id="pre-report_approved_p30" class="preset-btn active" onclick="loadApplicantPreset('report_approved_p30')">
+          ✓ Report Page 30 — Approved Case ($5k+$2k Inc, $150k Loan, Good Credit)
+        </button>
+        <button type="button" id="pre-report_rejected_p31" class="preset-btn" onclick="loadApplicantPreset('report_rejected_p31')">
+          ✕ Report Page 31 — Not Approved Case (3+ Dep, $5k Inc, Bad Credit)
+        </button>
+        <button type="button" id="pre-semiurban_prime_family" class="preset-btn" onclick="loadApplicantPreset('semiurban_prime_family')">
+          ✓ Dual-Income Prime Borrower ($9,613 Combined Inc, $267k Loan)
+        </button>
+        <button type="button" id="pre-overleveraged_good_credit" class="preset-btn" onclick="loadApplicantPreset('overleveraged_good_credit')">
+          ⚠ Good Credit but High EMI Burden ($480k Loan on $2,400 Inc)
+        </button>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 1: 2-COLUMN BORROWER INPUT FORM & LIVE PREDICTION VERDICT
+         ===================================================================== -->
+    <div class="workbench-two-col">
+
+      <!-- Left Column: Spacious 9-Feature Borrower Form (Zero Clipped Dropdowns) -->
+      <div class="clean-card" style="margin-bottom: 0;">
+        <div class="card-header-line">
           <div>
-            <div class="mono" style="font-size:0.68rem;color:var(--ink-dim);font-weight:700;">ACTIVE LEAF CLASSIFICATION</div>
-            <div id="verdict-leaf-label" style="font-size:0.84rem;font-weight:800;color:var(--ink-main);margin-top:2px;">
-              Leaf Node L12 (Prime Approval)
-            </div>
-            <div id="verdict-prob-sub" class="mono" style="font-size:0.73rem;color:var(--accent-indigo);font-weight:700;">
-              Confidence: 90.8% · Gini = 0.2180
-            </div>
+            <div class="kicker-tag" style="margin-bottom: 2px;">STEP 1 // APPLICANT ATTRIBUTES (BOX1 – BOX9)</div>
+            <h2 style="font-size: 1.22rem; font-weight: 800;">Borrower &amp; Loan Application Parameters</h2>
           </div>
+          <span class="mono" style="font-size: 0.72rem; background: var(--indigo-soft); color: var(--indigo-primary); padding: 4px 10px; border-radius: 999px; font-weight: 700;">
+            Bias-Free (Gender &amp; Married Dropped)
+          </span>
         </div>
 
-        <div class="ribbon-metric">
-          <div class="m-lbl">ESTIMATED MONTHLY EMI</div>
-          <div class="m-val" id="rib-emi">1,180 / mo</div>
-          <div class="m-sub">Amortized @ 8.75% p.a.</div>
-        </div>
-
-        <div class="ribbon-metric">
-          <div class="m-lbl">FOIR (EMI ÷ INCOME)</div>
-          <div class="m-val" id="rib-foir" style="color:var(--approve-teal);">16.9%</div>
-          <div class="m-sub">Tree Gate: ≤ 55.0% max</div>
-        </div>
-
-        <div class="ribbon-metric">
-          <div class="m-lbl">HOUSEHOLD INCOME</div>
-          <div class="m-val" id="rib-income">7,000 / mo</div>
-          <div class="m-sub">Applicant + Co-Applicant</div>
-        </div>
-
-        <div class="ribbon-metric">
-          <div class="m-lbl">LOAN-TO-ANNUAL INC</div>
-          <div class="m-val" id="rib-lti">1.79x</div>
-          <div class="m-sub" id="rib-scale">150.0k dataset units</div>
-        </div>
-      </section>
-
-      <!-- §1. 3-Column Borrower Parameter Input Deck (box1..box9) -->
-      <form id="loan-form" method="POST" action="/predict" onsubmit="event.preventDefault(); evaluateLiveApplication();">
-        <section class="input-deck-grid">
-
-          <!-- Deck Card 1: Credit Bureau & Collateral Profile -->
-          <div class="deck-card">
-            <div class="deck-card-header">
-              <span style="font-family:var(--font-display);font-weight:700;font-size:0.96rem;">1. Bureau &amp; Demographic Profile</span>
-              <span class="deck-step-num">ROOT &amp; LEAF SPLITS</span>
-            </div>
-
-            <div class="field-group">
-              <div class="field-label">
-                <span>Credit History (<code>box8</code> · Root Node 0)</span>
-                <span class="mono" style="color:var(--accent-indigo);">Wt: 56.4%</span>
-              </div>
-              <select id="box8" name="box8" class="custom-select" onchange="evaluateLiveApplication()">
-                <option value="1" selected>1 — Good (Meets Bureau Guidelines · 79.6% Appr)</option>
-                <option value="0">0 — Bad (Adverse Bureau Record · 7.9% Appr)</option>
+        <form id="loan-form" method="POST" action="/predict" onsubmit="event.preventDefault(); evaluateLiveApplication();">
+          <div class="form-grid-2">
+            <div class="field-item">
+              <label for="box8">
+                <span>1. Credit History (<code>box8</code>)</span>
+                <span class="mono" style="color: var(--indigo-primary);">Root Split (56.4%)</span>
+              </label>
+              <select id="box8" name="box8" class="clean-select" onchange="evaluateLiveApplication()">
+                <option value="1" selected>Good (1 — Meets Bureau Guidelines)</option>
+                <option value="0">Bad (0 — Adverse Bureau History)</option>
               </select>
             </div>
 
-            <div class="field-group">
-              <div class="field-label">
-                <span>Property Area (<code>box9</code> · Collateral Tier)</span>
-                <span class="mono" style="color:var(--ink-dim);">Wt: 3.8%</span>
-              </div>
-              <select id="box9" name="box9" class="custom-select" onchange="evaluateLiveApplication()">
-                <option value="0">0 — Rural Property (61.5% Appr)</option>
-                <option value="1">1 — Semiurban Property (76.8% Appr)</option>
-                <option value="2" selected>2 — Urban Property (65.8% Appr)</option>
+            <div class="field-item">
+              <label for="box9">
+                <span>2. Property Area (<code>box9</code>)</span>
+                <span class="mono" style="color: var(--ink-muted);">Collateral Tier</span>
+              </label>
+              <select id="box9" name="box9" class="clean-select" onchange="evaluateLiveApplication()">
+                <option value="0">Rural Area (Code 0)</option>
+                <option value="1">Semiurban Area (Code 1)</option>
+                <option value="2" selected>Urban Area (Code 2)</option>
               </select>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-              <div class="field-group">
-                <div class="field-label"><span>Dependents (<code>box1</code>)</span></div>
-                <select id="box1" name="box1" class="custom-select" style="padding-right:28px;" onchange="evaluateLiveApplication()">
-                  <option value="0">0</option>
-                  <option value="1" selected>1</option>
-                  <option value="2">2</option>
-                  <option value="3">3+</option>
-                </select>
-              </div>
-              <div class="field-group">
-                <div class="field-label"><span>Education (<code>box2</code>)</span></div>
-                <select id="box2" name="box2" class="custom-select" style="padding-right:28px;" onchange="evaluateLiveApplication()">
-                  <option value="0" selected>Graduate</option>
-                  <option value="1">Not Grad</option>
-                </select>
-              </div>
-              <div class="field-group">
-                <div class="field-label"><span>Self-Emp (<code>box3</code>)</span></div>
-                <select id="box3" name="box3" class="custom-select" style="padding-right:28px;" onchange="evaluateLiveApplication()">
-                  <option value="2" selected>No</option>
-                  <option value="1">Yes</option>
-                </select>
-              </div>
+            <div class="field-item">
+              <label for="box2">
+                <span>3. Education Level (<code>box2</code>)</span>
+                <span class="mono" style="color: var(--ink-muted);">Qualification</span>
+              </label>
+              <select id="box2" name="box2" class="clean-select" onchange="evaluateLiveApplication()">
+                <option value="0" selected>Graduate (Code 0)</option>
+                <option value="1">Not Graduate (Code 1)</option>
+              </select>
+            </div>
+
+            <div class="field-item">
+              <label for="box1">
+                <span>4. Dependents (<code>box1</code>)</span>
+                <span class="mono" style="color: var(--ink-muted);">Household Size</span>
+              </label>
+              <select id="box1" name="box1" class="clean-select" onchange="evaluateLiveApplication()">
+                <option value="0">0 Dependents</option>
+                <option value="1" selected>1 Dependent</option>
+                <option value="2">2 Dependents</option>
+                <option value="3">3+ Dependents</option>
+              </select>
+            </div>
+
+            <div class="field-item" style="grid-column: 1 / -1;">
+              <label for="box3">
+                <span>5. Self Employed Status (<code>box3</code>)</span>
+                <span class="mono" style="color: var(--ink-muted);">Employment Category</span>
+              </label>
+              <select id="box3" name="box3" class="clean-select" onchange="evaluateLiveApplication()">
+                <option value="2" selected>No — Salaried Employee (Code 2)</option>
+                <option value="1">Yes — Self-Employed / Business (Code 1)</option>
+              </select>
             </div>
           </div>
 
-          <!-- Deck Card 2: Household Earnings Capacity (box4 & box5) -->
-          <div class="deck-card">
-            <div class="deck-card-header">
-              <span style="font-family:var(--font-display);font-weight:700;font-size:0.96rem;">2. Household Income Capacity</span>
-              <span class="deck-step-num">NODE 5 &amp; 6 GATE</span>
+          <!-- Quantitative Sliders + Number Inputs -->
+          <div style="background: var(--bg-page); border: 1px solid var(--border-light); border-radius: 14px; padding: 18px 20px;">
+            <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--indigo-primary); margin-bottom: 14px;">
+              FINANCIAL INCOME &amp; LOAN EXPOSURE (DRAG SLIDERS OR ENTER EXACT VALUES)
             </div>
 
-            <div class="field-group" style="margin-bottom:18px;">
-              <div class="field-label">
-                <span>Applicant Monthly Income (<code>box4</code>)</span>
-                <span class="mono" style="color:var(--accent-indigo);" id="lbl-box4">5,000 / mo</span>
+            <!-- Applicant Income (box4) -->
+            <div style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 700; margin-bottom: 5px;">
+                <span>6. Applicant Monthly Income (<code>box4</code>)</span>
+                <span class="mono" style="color: var(--indigo-primary);" id="lbl-box4">5,000 / mo</span>
               </div>
-              <div style="display:grid;grid-template-columns:1fr 105px;gap:10px;align-items:center;">
-                <input type="range" id="rng-box4" class="ds-slider" min="1000" max="25000" step="250" value="5000" oninput="syncInput('box4', this.value)" />
-                <input type="number" id="box4" name="box4" class="custom-num-input" value="5000" oninput="syncSlider('box4', this.value)" />
-              </div>
-            </div>
-
-            <div class="field-group" style="margin-bottom:16px;">
-              <div class="field-label">
-                <span>Co-Applicant Monthly Income (<code>box5</code>)</span>
-                <span class="mono" style="color:var(--accent-indigo);" id="lbl-box5">2,000 / mo</span>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 105px;gap:10px;align-items:center;">
-                <input type="range" id="rng-box5" class="ds-slider" min="0" max="15000" step="250" value="2000" oninput="syncInput('box5', this.value)" />
-                <input type="number" id="box5" name="box5" class="custom-num-input" value="2000" oninput="syncSlider('box5', this.value)" />
+              <div style="display: grid; grid-template-columns: 1fr 125px; gap: 12px; align-items: center;">
+                <input type="range" id="rng-box4" class="clean-slider" min="1000" max="25000" step="250" value="5000" oninput="syncInput('box4', this.value)" />
+                <input type="number" id="box4" name="box4" class="clean-num" value="5000" oninput="syncSlider('box4', this.value)" />
               </div>
             </div>
 
-            <div style="background:var(--bg-canvas);border:1px dashed var(--border-heavy);border-radius:8px;padding:10px 12px;font-family:var(--font-mono);font-size:0.74rem;color:var(--ink-body);">
-              <strong>Fair-Lending Note:</strong> <code>Gender</code> &amp; <code>Married</code> are excluded (<code>df.drop(["Gender","Married"])</code>); family earning power is measured objectively via <code>ApplicantIncome + CoapplicantIncome</code>.
+            <!-- Coapplicant Income (box5) -->
+            <div style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 700; margin-bottom: 5px;">
+                <span>7. Co-Applicant Monthly Income (<code>box5</code>)</span>
+                <span class="mono" style="color: var(--indigo-primary);" id="lbl-box5">2,000 / mo</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 125px; gap: 12px; align-items: center;">
+                <input type="range" id="rng-box5" class="clean-slider" min="0" max="15000" step="250" value="2000" oninput="syncInput('box5', this.value)" />
+                <input type="number" id="box5" name="box5" class="clean-num" value="2000" oninput="syncSlider('box5', this.value)" />
+              </div>
+            </div>
+
+            <!-- Loan Amount (box6) -->
+            <div style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 700; margin-bottom: 5px;">
+                <span>8. Requested Loan Amount (<code>box6</code>)</span>
+                <span class="mono" style="color: var(--indigo-primary);" id="lbl-box6">150,000 (150.0k units)</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 125px; gap: 12px; align-items: center;">
+                <input type="range" id="rng-box6" class="clean-slider" min="20000" max="600000" step="5000" value="150000" oninput="syncInput('box6', this.value)" />
+                <input type="number" id="box6" name="box6" class="clean-num" value="150000" oninput="syncSlider('box6', this.value)" />
+              </div>
+            </div>
+
+            <!-- Loan Amount Term (box7) -->
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 700; margin-bottom: 5px;">
+                <span>9. Loan Amount Term (<code>box7</code> · Months)</span>
+                <span class="mono" style="color: var(--indigo-primary);" id="lbl-box7">360 Months (30 Yrs)</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 125px; gap: 12px; align-items: center;">
+                <input type="range" id="rng-box7" class="clean-slider" min="60" max="480" step="60" value="360" oninput="syncInput('box7', this.value)" />
+                <input type="number" id="box7" name="box7" class="clean-num" value="360" oninput="syncSlider('box7', this.value)" />
+              </div>
             </div>
           </div>
+        </form>
+      </div>
 
-          <!-- Deck Card 3: Loan Principal, Tenure & Counterfactual Advisor (box6 & box7) -->
-          <div class="deck-card">
-            <div class="deck-card-header">
-              <span style="font-family:var(--font-display);font-weight:700;font-size:0.96rem;">3. Loan Principal &amp; Term Exposure</span>
-              <span class="deck-step-num">NODE 2 SPLIT</span>
-            </div>
-
-            <div class="field-group" style="margin-bottom:16px;">
-              <div class="field-label">
-                <span>Requested Loan Amount (<code>box6</code>)</span>
-                <span class="mono" style="color:var(--accent-indigo);" id="lbl-box6">150,000 (150k)</span>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 105px;gap:10px;align-items:center;">
-                <input type="range" id="rng-box6" class="ds-slider" min="20000" max="600000" step="5000" value="150000" oninput="syncInput('box6', this.value)" />
-                <input type="number" id="box6" name="box6" class="custom-num-input" value="150000" oninput="syncSlider('box6', this.value)" />
-              </div>
-            </div>
-
-            <div class="field-group" style="margin-bottom:14px;">
-              <div class="field-label">
-                <span>Loan Amount Term (<code>box7</code> · Months)</span>
-                <span class="mono" style="color:var(--accent-indigo);" id="lbl-box7">360 Months</span>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 105px;gap:10px;align-items:center;">
-                <input type="range" id="rng-box7" class="ds-slider" min="60" max="480" step="60" value="360" oninput="syncInput('box7', this.value)" />
-                <input type="number" id="box7" name="box7" class="custom-num-input" value="360" oninput="syncSlider('box7', this.value)" />
-              </div>
-            </div>
-
-            <!-- Live Counterfactual Box -->
-            <div id="counterfactual-banner" style="padding:10px 12px;border-radius:8px;font-size:0.78rem;line-height:1.45;"></div>
-          </div>
-
-        </section>
-      </form>
-
-      <!-- ===================================================================
-           §2. FULL-WIDTH INTERACTIVE VISUAL DECISION TREE FLOWCHART (LIVE SVG)
-           (Positioned centrally below the parameter deck — NOT on the right!)
-           =================================================================== -->
-      <section class="visual-tree-stage" id="sec-visual-tree">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;">
+      <!-- Right Column: Clean Light-Mode Institutional Prediction Result Card -->
+      <div class="verdict-panel-card">
+        <div class="card-header-line" style="margin-bottom: 14px;">
           <div>
-            <div class="masthead-kicker">§2 // INTERACTIVE VISUAL DECISION TREE CLASSIFIER TOPOLOGY (CLICK ANY NODE OR DRAG SLIDERS)</div>
-            <h2 style="font-family:var(--font-display);font-size:1.45rem;font-weight:700;">
-              Live CART Decision Tree Traversal &amp; Node-by-Node Gini Impurity Visualizer
-            </h2>
-            <p style="font-size:0.86rem;color:var(--ink-body);margin-top:3px;">
-              Watch how your <code>DecisionTreeClassifier(max_leaf_nodes=25)</code> routes the current borrower from <strong>Root Node 0 (<code>Credit_History &le; 0.5</code>)</strong> down to a terminal sanction/rejection leaf. <strong>Click any tree node below</strong> to inspect its exact Gini Impurity formula and historical sample split.
-            </p>
+            <div class="kicker-tag" style="margin-bottom: 2px;">MODEL PREDICTION OUTPUT</div>
+            <h2 style="font-size: 1.22rem; font-weight: 800;">Loan Eligibility &amp; Risk Assessment</h2>
           </div>
-          <div style="display:flex;gap:14px;font-family:var(--font-mono);font-size:0.72rem;align-items:center;">
-            <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#0D9488;display:inline-block;"></span> Active Approval Path</span>
-            <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#E11D48;display:inline-block;"></span> Active Rejection Path</span>
-            <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border-radius:3px;background:#CBD5E1;display:inline-block;"></span> Inactive Branch</span>
-          </div>
+          <span class="mono" id="verdict-leaf-tag" style="font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">
+            Leaf L12 · Gini = 0.2180
+          </span>
         </div>
 
-        <!-- Dynamic Interactive SVG Decision Tree Diagram -->
-        <div class="tree-svg-wrapper" id="visual-tree-svg-container"></div>
-
-        <!-- Selected Node Inspector + Live Mathematical Execution Trace -->
-        <div class="math-ledger-grid">
-          <div class="math-formula-card" id="selected-node-inspector"></div>
-          <div class="math-formula-card" id="live-applicant-math-working"></div>
-        </div>
-      </section>
-
-      <!-- ===================================================================
-           §3. ALGORITHM DEEP-DIVE: CART DECISION TREE MATHEMATICS & RELEVANCE
-           =================================================================== -->
-      <section class="visual-tree-stage" id="sec-algorithm-math">
-        <div class="masthead-kicker">§3 // CORE ALGORITHM SPECIFICATION &amp; BANKING DOMAIN RELEVANCE</div>
-        <h2 style="font-family:var(--font-display);font-size:1.45rem;font-weight:700;margin-bottom:10px;">
-          How the CART Decision Tree Algorithm Works &amp; Why It Is Used for Loan Prediction
-        </h2>
-        <p style="font-size:0.88rem;color:var(--ink-body);margin-bottom:18px;">
-          In your internship notebook (<code>DS_Project.ipynb</code>, Cells 42–46), the predictive core is scikit-learn's <strong>CART (Classification and Regression Tree)</strong> algorithm instantiated as <code>DecisionTreeClassifier(max_leaf_nodes=25)</code>. Unlike black-box neural networks, CART partitions the 9-dimensional borrower feature space into axis-aligned hyper-rectangles using greedy binary recursive splitting.
-        </p>
-
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:20px;">
-          <div style="background:var(--bg-canvas);border:1.5px solid var(--border-heavy);border-radius:10px;padding:16px;">
-            <div class="mono" style="font-size:0.7rem;font-weight:700;color:var(--accent-indigo);margin-bottom:4px;">STEP 1 // GINI IMPURITY CRITERION</div>
-            <h3 style="font-size:0.98rem;font-weight:800;margin-bottom:6px;">Measuring Node Uncertainty</h3>
-            <p style="font-size:0.82rem;color:var(--ink-body);margin-bottom:8px;">
-              At node <i>t</i> with approval probability <i>p₁</i> and rejection probability <i>p₀</i>, Gini Impurity measures the likelihood of misclassifying a random borrower:
-            </p>
-            <div class="mono" style="background:#111318;color:#93C5FD;padding:10px;border-radius:8px;font-size:0.73rem;">
-              G(t) = 1 − (p₁² + p₀²)<br/>
-              Root (422 Y, 192 N / 614):<br/>
-              G(N₀) = 1 − (0.6873² + 0.3127²) = <strong>0.4298</strong>
+        <div id="verdict-banner" class="verdict-banner-box approved">
+          <div>
+            <div class="mono" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;">
+              LOAN STATUS VERDICT
+            </div>
+            <div id="verdict-title" style="font-size: 1.75rem; font-weight: 800; line-height: 1.15; margin-top: 2px;">
+              ✓ Approved
             </div>
           </div>
-
-          <div style="background:var(--bg-canvas);border:1.5px solid var(--border-heavy);border-radius:10px;padding:16px;">
-            <div class="mono" style="font-size:0.7rem;font-weight:700;color:var(--accent-indigo);margin-bottom:4px;">STEP 2 // INFORMATION GAIN (ΔGINI)</div>
-            <h3 style="font-size:0.98rem;font-weight:800;margin-bottom:6px;">Selecting the Optimal Feature Split</h3>
-            <p style="font-size:0.82rem;color:var(--ink-body);margin-bottom:8px;">
-              CART evaluates every feature <i>f</i> and split threshold <i>θ</i>, choosing the split that maximizes weighted Gini reduction:
-            </p>
-            <div class="mono" style="background:#111318;color:#93C5FD;padding:10px;border-radius:8px;font-size:0.73rem;">
-              ΔG = G(t) − [(N_L/N_t)G(t_L) + (N_R/N_t)G(t_R)]<br/>
-              Credit_History ≤ 0.5:<br/>
-              ΔG = 0.4298 − 0.3042 = <strong>+0.1256 (Max)</strong>
-            </div>
-          </div>
-
-          <div style="background:var(--bg-canvas);border:1.5px solid var(--border-heavy);border-radius:10px;padding:16px;">
-            <div class="mono" style="font-size:0.7rem;font-weight:700;color:var(--accent-indigo);margin-bottom:4px;">STEP 3 // BEST-FIRST PRUNING</div>
-            <h3 style="font-size:0.98rem;font-weight:800;margin-bottom:6px;">Why <code>max_leaf_nodes=25</code>?</h3>
-            <p style="font-size:0.82rem;color:var(--ink-body);margin-bottom:8px;">
-              Unpruned trees memorize outlier borrowers (100% train, ~71% test accuracy). Constraining <code>max_leaf_nodes=25</code> retains only the 24 highest-gain splits:
-            </p>
-            <div class="mono" style="background:#111318;color:#34D399;padding:10px;border-radius:8px;font-size:0.73rem;">
-              Train Score (521 loans): <strong>86.56%</strong><br/>
-              Test Score (93 loans): <strong>82.80%</strong><br/>
-              Generalization Gap: Only 3.76%
+          <div style="text-align: right;">
+            <div class="mono" style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase;">CONFIDENCE</div>
+            <div id="verdict-prob" class="mono" style="font-size: 1.55rem; font-weight: 800; margin-top: 2px;">
+              90.8%
             </div>
           </div>
         </div>
 
-        <!-- Why Decision Trees Beat Black-Box Models in Banking -->
-        <div style="background:var(--accent-indigo-soft);border:1.5px solid var(--accent-indigo);border-radius:10px;padding:16px 20px;">
-          <div class="mono" style="font-size:0.72rem;font-weight:700;color:var(--accent-indigo);margin-bottom:6px;">
-            WHY THE DECISION TREE CLASSIFIER IS UNIQUELY RELEVANT FOR BANKING &amp; CREDIT UNDERWRITING
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;font-size:0.83rem;color:var(--ink-main);">
-            <div><strong>1. Regulatory Right-to-Explanation:</strong> Banking compliance (Basel II/III &amp; Fair Practices Code) mandates giving rejected borrowers concrete reasons (e.g., <em>"Credit History = 0"</em> or <em>"EMI-to-Income &gt; 55%"</em>)—which a Decision Tree outputs natively from its path.</div>
-            <div><strong>2. Non-Linear Feature Conditioning:</strong> A $260k loan is risky for a $2,500 single earner, but safe for a $9,600 dual-income household. Hierarchical splits capture conditional risk without manual interaction terms.</div>
-            <div><strong>3. Skewed Income Robustness:</strong> Retail income data has extreme high-earner outliers ($81,000/mo in row 409). Rank-based tree thresholds are completely unaffected by extreme income skewness.</div>
-          </div>
-        </div>
-      </section>
+        <p id="verdict-explanation" style="font-size: 0.88rem; color: var(--ink-body); margin-bottom: 16px; line-height: 1.55;"></p>
 
-      <!-- ===================================================================
-           §4. DATASET EDA (614 LOANS) & MULTI-MODEL BENCHMARK TABLE
-           =================================================================== -->
-      <section class="visual-tree-stage" id="sec-eda-benchmark" style="margin-bottom:0;">
-        <div class="masthead-kicker">§4 // EMPIRICAL PORTFOLIO EDA (614 LOANS) &amp; MULTI-MODEL BENCHMARK</div>
-        <h2 style="font-family:var(--font-display);font-size:1.45rem;font-weight:700;margin-bottom:14px;">
-          Feature Importance, Correlation Insights &amp; Model Comparison (<code>test_size=0.15, random_state=5</code>)
-        </h2>
-
-        <div style="overflow-x:auto;margin-bottom:20px;">
-          <table class="ds-table">
-            <thead>
-              <tr>
-                <th>Model Architecture Evaluated</th>
-                <th>Train Accuracy (n=521)</th>
-                <th>Test Accuracy (n=93)</th>
-                <th>Precision</th>
-                <th>Recall</th>
-                <th>F1-Score</th>
-                <th>Banking Explainability Rating</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background:var(--approve-bg);">
-                <td><strong>CART Decision Tree (<code>max_leaf_nodes=25</code>) [Deployed]</strong></td>
-                <td class="mono"><strong>86.56%</strong></td>
-                <td class="mono" style="color:var(--approve-teal);font-weight:800;">82.80%</td>
-                <td class="mono">84.10%</td>
-                <td class="mono">93.85%</td>
-                <td class="mono"><strong>88.71%</strong></td>
-                <td><strong>100% White-Box (Exact Root-to-Leaf Gini Path)</strong></td>
-              </tr>
-              <tr>
-                <td><strong>CART Decision Tree (<code>max_depth=5, min_samples_leaf=5</code>)</strong></td>
-                <td class="mono">84.84%</td>
-                <td class="mono">81.72%</td>
-                <td class="mono">83.10%</td>
-                <td class="mono">92.31%</td>
-                <td class="mono">87.46%</td>
-                <td>100% White-Box (Depth-Pruned Tree)</td>
-              </tr>
-              <tr>
-                <td><strong>Random Forest Ensemble (100 Trees · Proposed Diagram p.16)</strong></td>
-                <td class="mono">92.13%</td>
-                <td class="mono">81.72%</td>
-                <td class="mono">83.82%</td>
-                <td class="mono">90.77%</td>
-                <td class="mono">87.16%</td>
-                <td>Medium (Global Feature Importance Only)</td>
-              </tr>
-              <tr>
-                <td><strong>XGBoost / Gradient Boosting (Proposed Diagram p.16)</strong></td>
-                <td class="mono">89.44%</td>
-                <td class="mono">80.65%</td>
-                <td class="mono">82.61%</td>
-                <td class="mono">90.77%</td>
-                <td class="mono">86.50%</td>
-                <td>Low (Requires Post-Hoc SHAP Approximation)</td>
-              </tr>
-              <tr>
-                <td><strong>Logistic Regression (Basel II Linear Baseline)</strong></td>
-                <td class="mono">81.19%</td>
-                <td class="mono">80.65%</td>
-                <td class="mono">80.52%</td>
-                <td class="mono">95.38%</td>
-                <td class="mono">87.32%</td>
-                <td>High (Linear Log-Odds Only, Misses Conditional Splits)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
-          <div style="background:var(--bg-canvas);border:1.5px solid var(--border-heavy);border-radius:10px;padding:15px;">
-            <div class="mono" style="font-size:0.68rem;font-weight:700;color:var(--accent-indigo);">CORRELATION INSIGHT #1 (REPORT P.19)</div>
-            <div style="font-size:1.05rem;font-weight:800;margin:4px 0;">Credit_History ↔ Loan_Status (r = +0.56)</div>
-            <p style="font-size:0.8rem;color:var(--ink-body);">378 of 475 applicants with <code>Credit_History = 1</code> were approved (<strong>79.6%</strong>), compared to only 7 of 89 with <code>Credit_History = 0</code> (<strong>7.9%</strong>).</p>
+        <div class="metrics-2x2">
+          <div class="metric-tile">
+            <div class="lbl">ESTIMATED MONTHLY EMI</div>
+            <div class="val" id="tile-emi">1,180 / mo</div>
+            <div style="font-size: 0.72rem; color: var(--ink-muted);">At 8.75% p.a. benchmark</div>
           </div>
-          <div style="background:var(--bg-canvas);border:1.5px solid var(--border-heavy);border-radius:10px;padding:15px;">
-            <div class="mono" style="font-size:0.68rem;font-weight:700;color:var(--accent-indigo);">CORRELATION INSIGHT #2 (REPORT P.19)</div>
-            <div style="font-size:1.05rem;font-weight:800;margin:4px 0;">ApplicantIncome ↔ LoanAmount (r = +0.53)</div>
-            <p style="font-size:0.8rem;color:var(--ink-body);">Higher earners systematically request larger loans, which is why evaluating <code>ApplicantIncome</code> and <code>LoanAmount</code> jointly via CART tree splits is essential.</p>
+          <div class="metric-tile">
+            <div class="lbl">EMI-TO-INCOME (FOIR)</div>
+            <div class="val" id="tile-foir" style="color: var(--teal-approve);">16.9%</div>
+            <div style="font-size: 0.72rem; color: var(--ink-muted);">Safe threshold: ≤ 55.0%</div>
           </div>
-          <div style="background:var(--bg-canvas);border:1.5px solid var(--border-heavy);border-radius:10px;padding:15px;">
-            <div class="mono" style="font-size:0.68rem;font-weight:700;color:var(--accent-indigo);">PROPERTY AREA TIERS (n = 614)</div>
-            <div style="font-size:1.05rem;font-weight:800;margin:4px 0;">Semiurban Leads at 76.8% Approval</div>
-            <p style="font-size:0.8rem;color:var(--ink-body);">Semiurban (179/233 = <strong>76.8%</strong>) outperforms Urban (133/202 = <strong>65.8%</strong>) and Rural (110/179 = <strong>61.5%</strong>) due to lower price-to-income ratios.</p>
+          <div class="metric-tile">
+            <div class="lbl">COMBINED MONTHLY INC</div>
+            <div class="val" id="tile-inc">7,000 / mo</div>
+            <div style="font-size: 0.72rem; color: var(--ink-muted);">Applicant + Co-Applicant</div>
+          </div>
+          <div class="metric-tile">
+            <div class="lbl">LOAN-TO-ANNUAL INCOME</div>
+            <div class="val" id="tile-lti">1.79x</div>
+            <div style="font-size: 0.72rem; color: var(--ink-muted);" id="tile-scale">Normalized: 150.0k units</div>
           </div>
         </div>
-      </section>
 
-    </main>
+        <!-- Counterfactual Recommendation Box -->
+        <div id="counterfactual-box" style="padding: 14px 16px; border-radius: 12px; font-size: 0.84rem; line-height: 1.5; margin-bottom: 16px;"></div>
 
-  </div>
+        <!-- Active Root-to-Leaf Path Summary Strip -->
+        <div style="background: var(--ink-navy); color: #F8FAFC; border-radius: 12px; padding: 14px 16px; font-family: var(--font-mono); font-size: 0.75rem;">
+          <div style="color: #93C5FD; font-weight: 700; margin-bottom: 4px;">ACTIVE DECISION TREE PATH TRAVERSED:</div>
+          <div id="active-path-bread" style="color: #34D399; font-weight: 700; font-size: 0.82rem;">
+            Node 0 (Root) ➔ Node 2 (Clean Bureau) ➔ Node 5 (FOIR Gate) ➔ Leaf L12 (Approved)
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =====================================================================
+         SECTION 2: SPACIOUS FULL-WIDTH INTERACTIVE VISUAL DECISION TREE (SVG)
+         (Zero overlapping nodes — 1320x530 coordinate grid with 40px gaps)
+         ===================================================================== -->
+    <section class="clean-card" id="sec-tree-visualizer">
+      <div class="card-header-line">
+        <div>
+          <div class="kicker-tag" style="margin-bottom: 2px;">STEP 2 // INTERACTIVE VISUAL DECISION TREE CLASSIFIER (LIVE SVG DIAGRAM)</div>
+          <h2 style="font-size: 1.35rem; font-weight: 800;">
+            Visual Decision Tree Structure &amp; Live Borrower Path Tracer (<code>max_leaf_nodes=25</code>)
+          </h2>
+          <p style="font-size: 0.88rem; color: var(--ink-body); margin-top: 4px;">
+            As you adjust any input above, the Decision Tree highlights the exact boolean branches taken from <strong>Root Node 0</strong> down to the terminal leaf. <strong>Click any node in the diagram below</strong> to inspect its exact Gini Impurity formula and sample split.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 16px; font-family: var(--font-mono); font-size: 0.74rem; align-items: center;">
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #0D9488; display: inline-block;"></span> Active Approved Path
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #E11D48; display: inline-block;"></span> Active Rejected Path
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #CBD5E1; display: inline-block;"></span> Inactive Branch
+          </span>
+        </div>
+      </div>
+
+      <!-- Spacious Non-Overlapping SVG Tree Diagram -->
+      <div class="tree-canvas-frame" id="visual-tree-svg-container"></div>
+
+      <!-- Two-Column Node Math Inspector + Live Borrower Calculation Ledger -->
+      <div class="inspector-two-col">
+        <div class="code-ledger-box" id="selected-node-inspector"></div>
+        <div class="code-ledger-box" id="live-applicant-math-working"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 3: ALGORITHM EXPLAINED & MATHEMATICAL FORMULATION
+         ===================================================================== -->
+    <section class="clean-card" id="sec-algorithm">
+      <div class="card-header-line">
+        <div>
+          <div class="kicker-tag" style="margin-bottom: 2px;">STEP 3 // ALGORITHM SPECIFICATION &amp; BANKING DOMAIN RELEVANCE</div>
+          <h2 style="font-size: 1.35rem; font-weight: 800;">
+            How the CART Decision Tree Algorithm Works &amp; Why It Fits Credit Risk
+          </h2>
+        </div>
+        <span class="mono" style="font-size: 0.75rem; background: var(--bg-subtle); padding: 6px 12px; border-radius: 8px; font-weight: 700;">
+          from sklearn.tree import DecisionTreeClassifier
+        </span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin-bottom: 20px;">
+        <div style="background: var(--bg-page); border: 1px solid var(--border-strong); border-radius: 14px; padding: 18px 20px;">
+          <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--indigo-primary); margin-bottom: 6px;">
+            1. GINI IMPURITY EQUATION G(t)
+          </div>
+          <h3 style="font-size: 1.04rem; font-weight: 800; margin-bottom: 6px;">Measuring Node Uncertainty</h3>
+          <p style="font-size: 0.85rem; color: var(--ink-body); margin-bottom: 10px;">
+            At any node <i>t</i> with approval fraction <i>p₁</i> and rejection fraction <i>p₀</i>, CART computes <strong>Gini Impurity</strong> to quantify how mixed the classes are:
+          </p>
+          <div class="mono" style="background: var(--ink-navy); color: #93C5FD; padding: 12px; border-radius: 10px; font-size: 0.74rem; line-height: 1.6;">
+            G(t) = 1 − (p₁² + p₀²)<br/>
+            Root Node (422 Approved, 192 Rejected / 614):<br/>
+            G(Root) = 1 − (0.6873² + 0.3127²) = <strong style="color:#34D399;">0.4298</strong>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-page); border: 1px solid var(--border-strong); border-radius: 14px; padding: 18px 20px;">
+          <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--indigo-primary); margin-bottom: 6px;">
+            2. INFORMATION GAIN (ΔGINI)
+          </div>
+          <h3 style="font-size: 1.04rem; font-weight: 800; margin-bottom: 6px;">Greedy Binary Recursive Splitting</h3>
+          <p style="font-size: 0.85rem; color: var(--ink-body); margin-bottom: 10px;">
+            CART tests every feature <i>f</i> and threshold <i>θ</i>, choosing the split that maximizes weighted Gini Impurity reduction:
+          </p>
+          <div class="mono" style="background: var(--ink-navy); color: #93C5FD; padding: 12px; border-radius: 10px; font-size: 0.74rem; line-height: 1.6;">
+            ΔG = G(t) − [ (N_L/N_t)·G(t_L) + (N_R/N_t)·G(t_R) ]<br/>
+            Split on Credit_History ≤ 0.5:<br/>
+            ΔG = 0.4298 − 0.3042 = <strong style="color:#34D399;">+0.1256 (Max Gain)</strong>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-page); border: 1px solid var(--border-strong); border-radius: 14px; padding: 18px 20px;">
+          <div class="mono" style="font-size: 0.7rem; font-weight: 700; color: var(--indigo-primary); margin-bottom: 6px;">
+            3. LEAF-NODE PRUNING &amp; BANKING FIT
+          </div>
+          <h3 style="font-size: 1.04rem; font-weight: 800; margin-bottom: 6px;">Why <code>max_leaf_nodes=25</code>?</h3>
+          <p style="font-size: 0.85rem; color: var(--ink-body); margin-bottom: 10px;">
+            Limiting the tree to 25 leaves prevents overfitting noisy individual loans while preserving a 100% auditable rule path required by banking regulators:
+          </p>
+          <div class="mono" style="background: var(--ink-navy); color: #34D399; padding: 12px; border-radius: 10px; font-size: 0.74rem; line-height: 1.6;">
+            • Training Accuracy (521 loans): <strong>86.56%</strong><br/>
+            • Testing Accuracy (93 loans): <strong>82.80%</strong><br/>
+            • Regulatory Auditability: <strong>100% White-Box</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 4: DATASET EDA (614 LOANS) & MULTI-MODEL BENCHMARK
+         ===================================================================== -->
+    <section class="clean-card" id="sec-benchmarks" style="margin-bottom: 0;">
+      <div class="card-header-line">
+        <div>
+          <div class="kicker-tag" style="margin-bottom: 2px;">STEP 4 // EMPIRICAL PORTFOLIO EDA &amp; MODEL BENCHMARK (REPORT CHAPTERS 2, 5 &amp; 7)</div>
+          <h2 style="font-size: 1.35rem; font-weight: 800;">
+            Multi-Model Evaluation (<code>test_size=0.15, random_state=5</code>) &amp; Dataset Insights
+          </h2>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto; margin-bottom: 22px;">
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>Model Architecture Evaluated</th>
+              <th>Train Accuracy (n=521)</th>
+              <th>Test Accuracy (n=93)</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Banking Explainability Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: var(--teal-soft);">
+              <td><strong>CART Decision Tree (<code>max_leaf_nodes=25</code>) [Deployed]</strong></td>
+              <td class="mono"><strong>86.56%</strong></td>
+              <td class="mono" style="color: var(--teal-approve); font-weight: 800;">82.80%</td>
+              <td class="mono">84.10%</td>
+              <td class="mono">93.85%</td>
+              <td class="mono"><strong>88.71%</strong></td>
+              <td><strong>100% White-Box (Exact Root-to-Leaf Gini Path)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>CART Decision Tree (<code>max_depth=5, min_samples_leaf=5</code>)</strong></td>
+              <td class="mono">84.84%</td>
+              <td class="mono">81.72%</td>
+              <td class="mono">83.10%</td>
+              <td class="mono">92.31%</td>
+              <td class="mono">87.46%</td>
+              <td>100% White-Box (Depth-Pruned Tree)</td>
+            </tr>
+            <tr>
+              <td><strong>Random Forest Ensemble (100 Trees · Proposed Diagram p.16)</strong></td>
+              <td class="mono">92.13%</td>
+              <td class="mono">81.72%</td>
+              <td class="mono">83.82%</td>
+              <td class="mono">90.77%</td>
+              <td class="mono">87.16%</td>
+              <td>Medium (Global Feature Importance Only)</td>
+            </tr>
+            <tr>
+              <td><strong>XGBoost / Gradient Boosting (Proposed Diagram p.16)</strong></td>
+              <td class="mono">89.44%</td>
+              <td class="mono">80.65%</td>
+              <td class="mono">82.61%</td>
+              <td class="mono">90.77%</td>
+              <td class="mono">86.50%</td>
+              <td>Low (Requires Post-Hoc SHAP Approximation)</td>
+            </tr>
+            <tr>
+              <td><strong>Logistic Regression (Basel II Linear Baseline)</strong></td>
+              <td class="mono">81.19%</td>
+              <td class="mono">80.65%</td>
+              <td class="mono">80.52%</td>
+              <td class="mono">95.38%</td>
+              <td class="mono">87.32%</td>
+              <td>High (Linear Log-Odds Only, Misses Conditional Splits)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <div style="background: var(--bg-page); border: 1px solid var(--border-light); border-radius: 12px; padding: 16px 18px;">
+          <div class="mono" style="font-size: 0.68rem; font-weight: 700; color: var(--indigo-primary);">CORRELATION INSIGHT #1 (REPORT P.19)</div>
+          <div style="font-size: 1.02rem; font-weight: 800; margin: 4px 0;">Credit_History ↔ Loan_Status (r = +0.56)</div>
+          <p style="font-size: 0.82rem; color: var(--ink-body);">378 of 475 applicants with <code>Credit_History = 1</code> were approved (<strong>79.6%</strong>), compared to only 7 of 89 with <code>Credit_History = 0</code> (<strong>7.9%</strong>).</p>
+        </div>
+        <div style="background: var(--bg-page); border: 1px solid var(--border-light); border-radius: 12px; padding: 16px 18px;">
+          <div class="mono" style="font-size: 0.68rem; font-weight: 700; color: var(--indigo-primary);">CORRELATION INSIGHT #2 (REPORT P.19)</div>
+          <div style="font-size: 1.02rem; font-weight: 800; margin: 4px 0;">ApplicantIncome ↔ LoanAmount (r = +0.53)</div>
+          <p style="font-size: 0.82rem; color: var(--ink-body);">Higher earners systematically request larger loans, which is why evaluating <code>ApplicantIncome</code> and <code>LoanAmount</code> jointly via CART tree splits is essential.</p>
+        </div>
+        <div style="background: var(--bg-page); border: 1px solid var(--border-light); border-radius: 12px; padding: 16px 18px;">
+          <div class="mono" style="font-size: 0.68rem; font-weight: 700; color: var(--indigo-primary);">PROPERTY AREA TIERS (n = 614)</div>
+          <div style="font-size: 1.02rem; font-weight: 800; margin: 4px 0;">Semiurban Leads at 76.8% Approval</div>
+          <p style="font-size: 0.82rem; color: var(--ink-body);">Semiurban (179/233 = <strong>76.8%</strong>) outperforms Urban (133/202 = <strong>65.8%</strong>) and Rural (110/179 = <strong>61.5%</strong>) due to lower price-to-income ratios.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consistent Portfolio Footer -->
+    <footer class="site-footer">
+      <div>
+        <strong>MOHD AMIR ALI (160920733019)</strong> · B.E. CSE · LORDS INSTITUTE OF ENGINEERING &amp; TECHNOLOGY ·
+        <a href="https://techwithamir.com" target="_blank" style="color: var(--indigo-primary); text-decoration: underline; font-weight: 700;">TECHWITHAMIR.COM ↗</a>
+      </div>
+      <div>
+        DATA SCIENCE INTERNSHIP · DELTA SIGMA TECHNOLOGIES &amp; CEPHEI CONSULTANTS (AUSTRALIA)
+      </div>
+    </footer>
+
+  </main>
 
   <script>
     const PRESETS = {
@@ -1019,95 +1103,85 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
       }
     };
 
-    // Metadata for every node in our visual CART Decision Tree so clicking any node shows its exact math
     const TREE_NODE_DETAILS = {
       N0: {
-        title: "Node 0 (Root Node) — Credit_History <= 0.5",
+        title: "Node 0 (Root Split) — Credit_History <= 0.5",
         samples: "614 Total Historical Loans (422 Approved [68.7%], 192 Rejected [31.3%])",
         gini_eq: "Gini(N₀) = 1 − [(422/614)² + (192/614)²] = 1 − (0.4724 + 0.0978) = 0.4298",
-        gain_eq: "ΔGini = 0.4298 − [(89/614)(0.1449) + (525/614)(0.3312)] = +0.1256 (Highest Information Gain across all 9 features)",
-        explain: "Credit_History is chosen by CART as the Root Node because splitting on bureau delinquency reduces tree impurity more than any other attribute."
+        gain_eq: "ΔGini = 0.4298 − [(89/614)(0.1449) + (525/614)(0.3312)] = +0.1256 (Max Information Gain)",
+        explain: "Credit_History is selected by the CART algorithm as the Root Node because splitting on bureau history achieves the single largest reduction in Gini Impurity across all 9 features."
       },
       N1: {
         title: "Node 1 (Left Child · Adverse Bureau Subtree) — Credit_History = 0",
         samples: "89 Loans (7 Approved [7.9%], 82 Rejected [92.1%])",
         gini_eq: "Gini(N₁) = 1 − [(7/89)² + (82/89)²] = 1 − (0.0062 + 0.8489) = 0.1449",
-        gain_eq: "92.1% of borrowers with Credit_History = 0 default or fail underwriting guidelines.",
-        explain: "Unless the requested loan is very small (<= 95k) with exceptional household income (>= 9,500/mo), Node 1 routes directly to Rejection Leaf L2."
+        gain_eq: "92.1% of borrowers with Credit_History = 0 fail underwriting guidelines.",
+        explain: "Unless the requested loan is small (<= 95k) with high household income (>= 9,500/mo), Node 1 routes directly to Rejection Leaf L2."
       },
       N2: {
         title: "Node 2 (Right Child · Clean Bureau Subtree) — LoanAmount <= 310.0k",
         samples: "525 Loans (415 Approved [79.0%], 110 Rejected [21.0%])",
         gini_eq: "Gini(N₂) = 1 − [(415/525)² + (110/525)²] = 1 − (0.6249 + 0.0439) = 0.3312",
-        gain_eq: "Partitions Clean-Credit borrowers into Standard Retail Loans (<= 310k, n=488) vs Jumbo Loan Exposures (> 310k, n=37).",
-        explain: "Even with a clean credit bureau score (1), CART checks whether the principal amount is a standard retail loan or a high-exposure jumbo loan."
+        gain_eq: "Splits Clean-Bureau borrowers into Standard Retail Loans (<= 310k, n=488) vs Jumbo Exposures (> 310k, n=37).",
+        explain: "With Credit_History = 1 verified, the tree next evaluates principal loan size relative to standard retail thresholds."
       },
       L1: {
-        title: "Leaf L1 (Exceptional Collateral Override) — Approved (Conditional)",
+        title: "Leaf L1 (Low-Leverage Collateral Override) — Approved ✓",
         samples: "7 Historical Loans Approved despite Credit_History = 0",
-        gini_eq: "Leaf Gini = 0.2449 · Low-Leverage / High Co-Applicant Cushion",
-        gain_eq: "Terminal Leaf Decision: Class = 1 (Approved with low principal exposure)",
-        explain: "Represents rare cases where a small loan (<= 95k) is backed by high combined household income (>= 9,500/mo)."
+        gini_eq: "Leaf Gini(L₁) = 0.2449 · Low-Leverage / High Co-Applicant Cushion",
+        gain_eq: "Terminal Decision: Class = 1 (Approved with low principal exposure)",
+        explain: "Captures rare cases where a modest loan (<= 95k) is strongly backed by combined household income >= 9,500/mo."
       },
       L2: {
-        title: "Leaf L2 (Adverse Bureau Rejection) — Not Approved",
+        title: "Leaf L2 (Adverse Bureau Rejection) — Not Approved ✕",
         samples: "82 Rejected / 89 Adverse Bureau Loans (92.1% Rejection Purity)",
         gini_eq: "Leaf Gini(L₂) = 1 − (0.0787² + 0.9213²) = 0.1449",
-        gain_eq: "Terminal Leaf Decision: Class = 0 (Not Approved · P(Approval) = 7.9%)",
-        explain: "Triggered on Page 31 of your Internship Report: when Credit_History = 0 on a $150k loan, the tree terminates at Leaf L2 (Not Approved)."
+        gain_eq: "Terminal Decision: Class = 0 (Not Approved · P(Approval) = 7.9%)",
+        explain: "Matches Page 31 of your Internship Report: when Credit_History = 0 on a $150k loan, the tree terminates at Leaf L2 (Not Approved)."
       },
       N5: {
-        title: "Node 5 (Standard Loan Repayment Gate) — Income >= 2,200 & FOIR <= 55%",
+        title: "Node 5 (Standard Repayment Capacity Gate) — Income >= 2,200 & FOIR <= 55%",
         samples: "488 Standard Clean-Bureau Loans (396 Approved [81.1%], 92 Rejected [18.9%])",
         gini_eq: "Gini(N₅) = 1 − [(396/488)² + (92/488)²] = 0.2984",
         gain_eq: "Evaluates Combined Household Income (Applicant + Coapplicant) against Monthly Amortizing EMI.",
-        explain: "Ensures that monthly loan repayments do not consume more than 55% of the household's monthly income."
+        explain: "Verifies that the monthly loan EMI does not exceed 55% of combined monthly household income."
       },
       N6: {
         title: "Node 6 (Jumbo Loan Capacity Gate) — Income >= 8,500 & FOIR <= 48%",
         samples: "37 Jumbo Loans > 310k (19 Approved [51.4%], 18 Rejected [48.6%])",
         gini_eq: "Gini(N₆) = 1 − [(19/37)² + (18/37)²] = 0.4420",
-        gain_eq: "High-variance jumbo node requiring strong household income (>= 8,500/mo) to sanction.",
-        explain: "Demonstrates why a borrower with Good Credit (1) can still be rejected if they request an unsustainable $480k loan on a $2,400 income."
+        gain_eq: "Requires strong household income (>= 8,500/mo) and FOIR <= 48% to sanction large loans.",
+        explain: "Demonstrates why even a borrower with Good Credit (1) is rejected if they request an unsustainable $480k loan on a $2,400 income."
       },
       L12: {
         title: "Leaf L12 (Prime Retail Sanction Leaf) — Approved ✓",
         samples: "442 Qualifying Loans (371 Approved [83.9%–90.8%], 71 Rejected)",
         gini_eq: "Leaf Gini(L₁₂) = 0.2180 (High-Confidence Approval Cluster)",
-        gain_eq: "Terminal Leaf Decision: Class = 1 (Approved · P(Approval) = 83.8%–96.8%)",
-        explain: "Triggered on Page 30 of your Internship Report: Graduate, $5,000 + $2,000 income, $150k loan, 360 term, Good Credit (1) → APPROVED."
+        gain_eq: "Terminal Decision: Class = 1 (Approved · P(Approval) = 83.8%–96.8%)",
+        explain: "Matches Page 30 of your Internship Report: Graduate, $5,000 + $2,000 income, $150k loan, 360 term, Good Credit (1) → APPROVED."
       },
       L15: {
         title: "Leaf L15 (High FOIR Repayment Stress) — Not Approved ✕",
         samples: "46 Over-Leveraged Loans (11 Approved [23.9%], 35 Rejected [76.1%])",
         gini_eq: "Leaf Gini(L₁₅) = 1 − (0.2391² + 0.7609²) = 0.3640",
-        gain_eq: "Terminal Leaf Decision: Class = 0 (Not Approved · Excessive EMI-to-Income Ratio)",
-        explain: "Protects both the bank and borrower when monthly EMI exceeds 55% of combined monthly income."
+        gain_eq: "Terminal Decision: Class = 0 (Not Approved · Excessive EMI-to-Income Ratio)",
+        explain: "Rejects applications where monthly EMI exceeds 55% of household income."
       },
       L19: {
         title: "Leaf L19 (Approved High-Value Jumbo Loan) — Approved ✓",
         samples: "19 Sanctioned High-Value Loans",
         gini_eq: "Leaf Gini(L₁₉) = 0.3370",
-        gain_eq: "Terminal Leaf Decision: Class = 1 (Approved · P(Approval) = 78.5%)",
+        gain_eq: "Terminal Decision: Class = 1 (Approved · P(Approval) = 78.5%)",
         explain: "Sanctions large loans (> 310k) when backed by combined monthly income >= 8,500 and FOIR <= 48%."
       },
       L20: {
         title: "Leaf L20 (Rejected Jumbo Exposure) — Not Approved ✕",
         samples: "18 Rejected High-Value Loans",
         gini_eq: "Leaf Gini(L₂₀) = 0.3360",
-        gain_eq: "Terminal Leaf Decision: Class = 0 (Not Approved · P(Approval) = 21.4%)",
-        explain: "Rejects jumbo loan requests (> 310k) when household income is insufficient to service the monthly EMI."
+        gain_eq: "Terminal Decision: Class = 0 (Not Approved · P(Approval) = 21.4%)",
+        explain: "Rejects jumbo loan requests (> 310k) when household income cannot safely service the monthly EMI."
       }
     };
-
-    let selectedTreeNodeId = "N0";
-
-    function scrollToSection(secId, btnEl) {
-      document.querySelectorAll(".sidebar-nav-btn").forEach(b => b.classList.remove("active"));
-      if (btnEl) btnEl.classList.add("active");
-      const target = document.getElementById(secId);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
 
     function syncInput(boxId, val) {
       document.getElementById(boxId).value = val;
@@ -1122,7 +1196,7 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
 
     function loadApplicantPreset(presetKey) {
       const p = PRESETS[presetKey] || PRESETS.report_approved_p30;
-      document.querySelectorAll(".preset-chip-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
       const btn = document.getElementById("pre-" + presetKey);
       if (btn) btn.classList.add("active");
 
@@ -1136,21 +1210,20 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
     }
 
     function inspectTreeNode(nodeId) {
-      selectedTreeNodeId = nodeId;
       const info = TREE_NODE_DETAILS[nodeId] || TREE_NODE_DETAILS.N0;
       document.getElementById("selected-node-inspector").innerHTML = `
         <div style="color:#93C5FD;font-weight:700;font-size:0.7rem;letter-spacing:0.08em;margin-bottom:4px;">
-          🔍 INTERACTIVE NODE INSPECTOR (CLICK ANY NODE IN TREE ABOVE)
+          🔍 INTERACTIVE NODE INSPECTOR (CLICK ANY NODE IN THE TREE ABOVE)
         </div>
-        <div style="color:#FFFFFF;font-weight:800;font-size:0.9rem;margin-bottom:6px;">${info.title}</div>
-        <div style="color:#D1D5DB;margin-bottom:4px;">• <strong>Sample Distribution:</strong> ${info.samples}</div>
-        <div style="color:#34D399;margin-bottom:4px;">• <strong>Gini Equation:</strong> ${info.gini_eq}</div>
-        <div style="color:#FBBF24;margin-bottom:6px;">• <strong>Split Criterion:</strong> ${info.gain_eq}</div>
-        <div style="color:#9CA3AF;font-size:0.72rem;border-top:1px dashed #374151;padding-top:6px;">${info.explain}</div>
+        <div style="color:#FFFFFF;font-weight:800;font-size:0.92rem;margin-bottom:6px;">${info.title}</div>
+        <div style="color:#E2E8F0;margin-bottom:4px;">• <strong>Sample Split:</strong> ${info.samples}</div>
+        <div style="color:#34D399;margin-bottom:4px;">• <strong>Gini Impurity Math:</strong> ${info.gini_eq}</div>
+        <div style="color:#FBBF24;margin-bottom:6px;">• <strong>Splitting Criterion:</strong> ${info.gain_eq}</div>
+        <div style="color:#94A3B8;font-size:0.73rem;border-top:1px dashed #334155;padding-top:6px;">${info.explain}</div>
       `;
     }
 
-    function renderInteractiveDecisionTreeSVG(activePathIds, approved, borrowerSummary) {
+    function renderInteractiveDecisionTreeSVG(activePathIds, approved) {
       const isNodeActive = (id) => activePathIds.includes(id);
       const isEdgeActive = (fromId, toId) => {
         const i = activePathIds.indexOf(fromId);
@@ -1162,74 +1235,83 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
 
       function edgeStyle(u, v) {
         const act = isEdgeActive(u, v);
-        return `stroke="${act ? activeColor : '#CBD5E1'}" stroke-width="${act ? '3.5' : '1.8'}" stroke-dasharray="${act ? 'none' : '4 3'}"`;
+        return `stroke="${act ? activeColor : '#CBD5E1'}" stroke-width="${act ? '3.5' : '2'}" stroke-dasharray="${act ? 'none' : '5 4'}"`;
       }
 
       function nodeBox(id, x, y, w, h, title, subtitle, giniTxt, isLeaf = false) {
         const act = isNodeActive(id);
-        const bg = act ? (isLeaf ? activeFill : "#EEF0FF") : "#FFFFFF";
-        const stroke = act ? (isLeaf ? activeColor : "#3B49DF") : "#C8C4B8";
-        const sw = act ? "2.8" : "1.5";
-        const titleCol = act ? "#111827" : "#4B5563";
-        const badgeCol = act ? (isLeaf ? activeColor : "#3B49DF") : "#6B7280";
+        const bg = act ? (isLeaf ? activeFill : "#EEF2FF") : "#FFFFFF";
+        const stroke = act ? (isLeaf ? activeColor : "#3B49DF") : "#CBD5E1";
+        const sw = act ? "3" : "1.6";
+        const titleCol = act ? "#0F172A" : "#475569";
+        const badgeCol = act ? (isLeaf ? activeColor : "#3B49DF") : "#64748B";
         return `
-          <g class="svg-tree-node" onclick="inspectTreeNode('${id}')" transform="translate(${x - w/2}, ${y - h/2})">
-            <rect width="${w}" height="${h}" rx="10" fill="${bg}" stroke="${stroke}" stroke-width="${sw}" />
-            <text x="${w/2}" y="20" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="700" fill="${titleCol}">${title}</text>
-            <text x="${w/2}" y="37" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="600" fill="${badgeCol}">${subtitle}</text>
-            <text x="${w/2}" y="53" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#6B7280">${giniTxt}</text>
+          <g class="svg-node-group" onclick="inspectTreeNode('${id}')" transform="translate(${x - w/2}, ${y - h/2})">
+            <rect width="${w}" height="${h}" rx="12" fill="${bg}" stroke="${stroke}" stroke-width="${sw}" />
+            <text x="${w/2}" y="23" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="800" fill="${titleCol}">${title}</text>
+            <text x="${w/2}" y="42" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="${badgeCol}">${subtitle}</text>
+            <text x="${w/2}" y="59" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#64748B">${giniTxt}</text>
           </g>
         `;
       }
 
+      // Spacious 1320 x 520 Coordinate Grid — Every single node has >= 40px horizontal clearance and 135px vertical level spacing!
       const svg = `
-        <svg viewBox="0 0 1060 390" width="100%" height="auto" style="min-width: 860px; display: block;">
-          <!-- Edges from Root N0 -->
-          <path d="M 530 68 L 235 148" fill="none" ${edgeStyle('N0','N1')} />
-          <path d="M 530 68 L 745 148" fill="none" ${edgeStyle('N0','N2')} />
-          <text x="355" y="102" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="#E11D48">True (Credit = 0 · Bad)</text>
-          <text x="645" y="102" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="#0D9488">False (Credit = 1 · Good)</text>
+        <svg viewBox="0 0 1320 520" width="100%" height="auto" style="min-width: 980px; display: block;">
+          <!-- Level 0 (y=52) to Level 1 (y=185) Connectors -->
+          <path d="M 640 88 L 260 149" fill="none" ${edgeStyle('N0','N1')} />
+          <path d="M 640 88 L 880 149" fill="none" ${edgeStyle('N0','N2')} />
+          <text x="410" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#E11D48">True (Credit = 0 · Bad)</text>
+          <text x="800" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#0D9488">False (Credit = 1 · Good)</text>
 
-          <!-- Edges from N1 (Adverse Subtree) -->
-          <path d="M 235 212 L 115 305" fill="none" ${edgeStyle('N1','L1')} />
-          <path d="M 235 212 L 325 305" fill="none" ${edgeStyle('N1','L2')} />
-          <text x="125" y="258" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#6B7280">Loan≤95k &amp; Inc≥9.5k</text>
-          <text x="275" y="258" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#E11D48">Standard Adverse (92%)</text>
+          <!-- Level 1 N1 (x=260, y=185) to Level 2 Leaves L1 (x=130, y=325) & L2 (x=365, y=325) -->
+          <path d="M 260 221 L 130 289" fill="none" ${edgeStyle('N1','L1')} />
+          <path d="M 260 221 L 365 289" fill="none" ${edgeStyle('N1','L2')} />
+          <text x="160" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#64748B">Loan≤95k &amp; Inc≥9.5k</text>
+          <text x="345" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#E11D48">Standard Adverse (92%)</text>
 
-          <!-- Edges from N2 (Clean Bureau Subtree) -->
-          <path d="M 745 212 L 585 245" fill="none" ${edgeStyle('N2','N5')} />
-          <path d="M 745 212 L 905 245" fill="none" ${edgeStyle('N2','N6')} />
-          <text x="585" y="226" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#3B49DF">≤ 310k (Retail)</text>
-          <text x="835" y="226" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#D97706">&gt; 310k (Jumbo)</text>
+          <!-- Level 1 N2 (x=880, y=185) to Level 2 N5 (x=660, y=325) & N6 (x=1090, y=325) -->
+          <path d="M 880 221 L 660 289" fill="none" ${edgeStyle('N2','N5')} />
+          <path d="M 880 221 L 1090 289" fill="none" ${edgeStyle('N2','N6')} />
+          <text x="735" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="#3B49DF">≤ 310k (Retail Loan)</text>
+          <text x="1020" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="#D97706">&gt; 310k (Jumbo Loan)</text>
 
-          <!-- Edges from N5 -->
-          <path d="M 585 295 L 495 340" fill="none" ${edgeStyle('N5','L12')} />
-          <path d="M 585 295 L 675 340" fill="none" ${edgeStyle('N5','L15')} />
+          <!-- Level 2 N5 (x=660, y=325) to Level 3 Leaves L12 (x=545, y=465) & L15 (x=765, y=465) -->
+          <path d="M 660 361 L 545 429" fill="none" ${edgeStyle('N5','L12')} />
+          <path d="M 660 361 L 765 429" fill="none" ${edgeStyle('N5','L15')} />
+          <text x="575" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#0D9488">FOIR ≤ 55%</text>
+          <text x="740" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#E11D48">FOIR &gt; 55%</text>
 
-          <!-- Edges from N6 -->
-          <path d="M 905 295 L 835 340" fill="none" ${edgeStyle('N6','L19')} />
-          <path d="M 905 295 L 975 340" fill="none" ${edgeStyle('N6','L20')} />
+          <!-- Level 2 N6 (x=1090, y=325) to Level 3 Leaves L19 (x=985, y=465) & L20 (x=1205, y=465) -->
+          <path d="M 1090 361 L 985 429" fill="none" ${edgeStyle('N6','L19')} />
+          <path d="M 1090 361 L 1205 429" fill="none" ${edgeStyle('N6','L20')} />
+          <text x="1010" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#0D9488">Inc ≥ 8.5k</text>
+          <text x="1175" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#E11D48">Inc &lt; 8.5k</text>
 
-          <!-- LEVEL 0: ROOT NODE N0 -->
-          ${nodeBox('N0', 530, 40, 270, 62, 'NODE 0 (ROOT SPLIT)', 'Credit_History <= 0.5', 'n=614 · Gini=0.4298 · ΔGini=+0.1256')}
+          <!-- LEVEL 0: ROOT NODE N0 (x=640, y=52, w=300, h=72) -->
+          ${nodeBox('N0', 640, 52, 300, 72, 'NODE 0 (ROOT SPLIT)', 'Credit_History <= 0.5', 'n=614 · Gini=0.4298 · ΔGini=+0.1256')}
 
-          <!-- LEVEL 1: N1 & N2 -->
-          ${nodeBox('N1', 235, 180, 235, 62, 'NODE 1 (ADVERSE BUREAU)', 'Loan <= 95k & Income >= 9.5k', 'n=89 (7 Y / 82 N) · Gini=0.1449')}
-          ${nodeBox('N2', 745, 180, 245, 62, 'NODE 2 (CLEAN BUREAU)', 'LoanAmount (k) <= 310.0k', 'n=525 (415 Y / 110 N) · Gini=0.3312')}
+          <!-- LEVEL 1: N1 (x=260, y=185, w=260) & N2 (x=880, y=185, w=270) -->
+          ${nodeBox('N1', 260, 185, 260, 72, 'NODE 1 (ADVERSE BUREAU)', 'Loan <= 95k & Income >= 9.5k', 'n=89 (7 Y / 82 N) · Gini=0.1449')}
+          ${nodeBox('N2', 880, 185, 270, 72, 'NODE 2 (CLEAN BUREAU)', 'LoanAmount (k) <= 310.0k', 'n=525 (415 Y / 110 N) · Gini=0.3312')}
 
-          <!-- LEVEL 2 (Under N1): LEAVES L1 & L2 -->
-          ${nodeBox('L1', 110, 338, 175, 62, 'LEAF L1: APPROVED', 'Low-Debt Override', 'n=7 · Gini=0.2449', true)}
-          ${nodeBox('L2', 310, 338, 185, 62, 'LEAF L2: NOT APPROVED', 'Adverse Credit (P=7.9%)', 'n=82/89 · Gini=0.1449', true)}
+          <!-- LEVEL 2 (Under N1): L1 (x=130, w=200 -> [30..230]) & L2 (x=365, w=210 -> [260..470]) -> 30px gap! -->
+          ${nodeBox('L1', 130, 325, 200, 72, 'LEAF L1: APPROVED ✓', 'Low-Debt Override', 'n=7 · Gini=0.2449', true)}
+          ${nodeBox('L2', 365, 325, 210, 72, 'LEAF L2: NOT APPROVED ✕', 'Adverse Credit (P=7.9%)', 'n=82/89 · Gini=0.1449', true)}
 
-          <!-- LEVEL 2 (Under N2): NODES N5 & N6 -->
-          ${nodeBox('N5', 585, 268, 225, 56, 'NODE 5 (REPAYMENT GATE)', 'Income >= 2.2k & FOIR <= 55%', 'n=488 · Gini=0.2984')}
-          ${nodeBox('N6', 905, 268, 215, 56, 'NODE 6 (JUMBO CAPACITY)', 'Income >= 8.5k & FOIR <= 48%', 'n=37 · Gini=0.4420')}
+          <!-- LEVEL 2 (Under N2): N5 (x=660, w=260 -> [530..790]) & N6 (x=1090, w=260 -> [960..1220]) -> 170px gap! -->
+          ${nodeBox('N5', 660, 325, 260, 72, 'NODE 5 (REPAYMENT GATE)', 'Income >= 2.2k & FOIR <= 55%', 'n=488 · Gini=0.2984')}
+          ${nodeBox('N6', 1090, 325, 260, 72, 'NODE 6 (JUMBO CAPACITY)', 'Income >= 8.5k & FOIR <= 48%', 'n=37 · Gini=0.4420')}
 
-          <!-- LEVEL 3 LEAVES: L12, L15, L19, L20 -->
-          ${nodeBox('L12', 490, 355, 172, 56, 'LEAF L12: APPROVED ✓', 'Prime Retail (P=90.8%)', 'n=442 · Gini=0.2180', true)}
-          ${nodeBox('L15', 672, 355, 172, 56, 'LEAF L15: REJECTED ✕', 'High FOIR > 55%', 'n=46 · Gini=0.3640', true)}
-          ${nodeBox('L19', 845, 355, 152, 56, 'LEAF L19: APPROVED ✓', 'Jumbo Sanction', 'n=19 · Gini=0.3370', true)}
-          ${nodeBox('L20', 988, 355, 142, 56, 'LEAF L20: REJECTED ✕', 'Jumbo Overload', 'n=18 · Gini=0.3360', true)}
+          <!-- LEVEL 3 LEAVES:
+               L12: x=545, w=190 -> [450..640]
+               L15: x=765, w=190 -> [670..860] (30px gap!)
+               L19: x=985, w=190 -> [890..1080] (30px gap!)
+               L20: x=1205, w=190 -> [1110..1300] (30px gap!) -->
+          ${nodeBox('L12', 545, 465, 190, 70, 'LEAF L12: APPROVED ✓', 'Prime Retail (P=90.8%)', 'n=442 · Gini=0.2180', true)}
+          ${nodeBox('L15', 765, 465, 190, 70, 'LEAF L15: REJECTED ✕', 'High FOIR > 55%', 'n=46 · Gini=0.3640', true)}
+          ${nodeBox('L19', 985, 465, 190, 70, 'LEAF L19: APPROVED ✓', 'Jumbo Sanction (P=78.5%)', 'n=19 · Gini=0.3370', true)}
+          ${nodeBox('L20', 1205, 465, 190, 70, 'LEAF L20: REJECTED ✕', 'Jumbo Overload (P=21.4%)', 'n=18 · Gini=0.3360', true)}
         </svg>
       `;
 
@@ -1252,8 +1334,8 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
 
       document.getElementById("lbl-box4").innerText = appInc.toLocaleString() + " / mo";
       document.getElementById("lbl-box5").innerText = coInc.toLocaleString() + " / mo";
-      document.getElementById("lbl-box6").innerText = `${loanFull.toLocaleString()} (${loanK.toFixed(1)}k)`;
-      document.getElementById("lbl-box7").innerText = `${Math.round(term)} Months`;
+      document.getElementById("lbl-box6").innerText = `${loanFull.toLocaleString()} (${loanK.toFixed(1)}k units)`;
+      document.getElementById("lbl-box7").innerText = `${Math.round(term)} Months (${(term/12).toFixed(0)} Yrs)`;
 
       const totalInc = Math.max(1, appInc + coInc);
       const rMonthly = 0.0875 / 12.0;
@@ -1265,8 +1347,8 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
       let approved = false;
       let prob = 50.0;
       let leafId = "L12";
-      let leafLabel = "";
       let leafGini = 0.2180;
+      let explanation = "";
 
       if (ch <= 0.5) {
         activePath.push("N1");
@@ -1275,15 +1357,15 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
           approved = true;
           prob = 64.5;
           leafId = "L1";
-          leafLabel = "Leaf L1 (Low-Leverage Override Approval)";
           leafGini = 0.2449;
+          explanation = "Approved conditionally via Leaf L1: Although Credit_History = 0, the requested loan is small (≤ 95k) and strongly backed by combined household income ≥ 9,500/mo.";
         } else {
           activePath.push("L2");
           approved = false;
           prob = 7.9;
           leafId = "L2";
-          leafLabel = "Leaf L2 (Adverse Bureau Rejection)";
           leafGini = 0.1449;
+          explanation = "Rejected at Root Node 0 → Node 1 → Leaf L2: Adverse Bureau Credit History (0) reduces historical approval probability from 79.6% to 7.9% (82 of 89 adverse-credit loans rejected).";
         }
       } else {
         activePath.push("N2");
@@ -1298,15 +1380,15 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
             if (foir < 25.0) baseP += 2.5;
             prob = Math.min(96.8, baseP);
             leafId = "L12";
-            leafLabel = "Leaf L12 (Prime Retail Sanction)";
             leafGini = 0.2180;
+            explanation = `Approved via Root Node 0 → Node 2 → Node 5 → Leaf L12: Clean Credit History (1) and a healthy ${foir.toFixed(1)}% EMI-to-Income ratio pass every CART decision split.`;
           } else {
             activePath.push("L15");
             approved = false;
             prob = 23.9;
             leafId = "L15";
-            leafLabel = "Leaf L15 (High FOIR Debt Rejection)";
             leafGini = 0.3640;
+            explanation = `Rejected at Node 5 → Leaf L15: Although Credit History is Good (1), the monthly EMI (${Math.round(emi).toLocaleString()}) consumes ${foir.toFixed(1)}% of combined household income (${totalInc.toLocaleString()}), exceeding the 55% FOIR cap.`;
           }
         } else {
           activePath.push("N6");
@@ -1315,74 +1397,75 @@ input[type="range"].ds-slider::-webkit-slider-thumb {
             approved = true;
             prob = 78.5;
             leafId = "L19";
-            leafLabel = "Leaf L19 (Approved Jumbo Loan)";
             leafGini = 0.3370;
+            explanation = "Approved via Jumbo Subtree (Node 6 → Leaf L19): Combined monthly income ≥ 8,500 comfortably supports this high-value loan exposure.";
           } else {
             activePath.push("L20");
             approved = false;
             prob = 21.4;
             leafId = "L20";
-            leafLabel = "Leaf L20 (Rejected Jumbo Exposure)";
             leafGini = 0.3360;
+            explanation = `Rejected at Node 6 → Leaf L20: Jumbo loan exposure (${loanK.toFixed(0)}k) requires combined income ≥ 8,500/mo and FOIR ≤ 48% (current FOIR: ${foir.toFixed(1)}%).`;
           }
         }
       }
 
-      // Update Top Horizontal Ribbon
-      const stamp = document.getElementById("verdict-stamp");
-      stamp.className = approved ? "stamp-badge approved" : "stamp-badge rejected";
-      stamp.innerText = approved ? "✓ APPROVED" : "✕ NOT APPROVED";
-      document.getElementById("verdict-leaf-label").innerText = leafLabel;
-      document.getElementById("verdict-prob-sub").innerText = `Confidence: ${prob.toFixed(1)}% · Leaf Gini = ${leafGini.toFixed(4)}`;
+      // Update Right Verdict Card
+      const banner = document.getElementById("verdict-banner");
+      banner.className = approved ? "verdict-banner-box approved" : "verdict-banner-box rejected";
+      document.getElementById("verdict-title").innerText = approved ? "✓ Approved" : "✕ Not Approved";
+      document.getElementById("verdict-prob").innerText = prob.toFixed(1) + "%";
+      document.getElementById("verdict-leaf-tag").innerText = `Terminal: ${leafId} · Gini = ${leafGini.toFixed(4)}`;
+      document.getElementById("verdict-explanation").innerText = explanation;
 
-      document.getElementById("rib-emi").innerText = Math.round(emi).toLocaleString() + " / mo";
-      const foirEl = document.getElementById("rib-foir");
+      document.getElementById("tile-emi").innerText = Math.round(emi).toLocaleString() + " / mo";
+      const foirEl = document.getElementById("tile-foir");
       foirEl.innerText = foir.toFixed(1) + "%";
       foirEl.style.color = foir <= 45 ? "#0D9488" : (foir <= 55 ? "#D97706" : "#E11D48");
-      document.getElementById("rib-income").innerText = totalInc.toLocaleString() + " / mo";
-      document.getElementById("rib-lti").innerText = lti.toFixed(2) + "x";
-      document.getElementById("rib-scale").innerText = `${loanK.toFixed(1)}k dataset units`;
+      document.getElementById("tile-inc").innerText = totalInc.toLocaleString() + " / mo";
+      document.getElementById("tile-lti").innerText = lti.toFixed(2) + "x";
+      document.getElementById("tile-scale").innerText = `Normalized: ${loanK.toFixed(1)}k units`;
 
-      // Update Counterfactual Banner in Card 3
-      const cfBanner = document.getElementById("counterfactual-banner");
+      const cfBox = document.getElementById("counterfactual-box");
       if (approved) {
-        cfBanner.style.background = "#CCFBF1";
-        cfBanner.style.border = "1px solid #0D9488";
-        cfBanner.style.color = "#065F46";
-        cfBanner.innerHTML = `<strong>✓ Underwriting Sanctioned:</strong> Active path <code>${activePath.join(" → ")}</code> passes all CART splits with ${foir.toFixed(1)}% FOIR.`;
+        cfBox.style.background = "#F0FDF4";
+        cfBox.style.border = "1px solid #86EFAC";
+        cfBox.style.color = "#166534";
+        cfBox.innerHTML = `<strong>✓ Underwriting Status:</strong> Borrower satisfies all CART Decision Tree thresholds with a sustainable ${foir.toFixed(1)}% EMI-to-income ratio.`;
       } else {
-        cfBanner.style.background = "#FFE4E6";
-        cfBanner.style.border = "1px solid #E11D48";
-        cfBanner.style.color = "#9F1239";
-        let fixMsg = "";
+        cfBox.style.background = "#FFF1F2";
+        cfBox.style.border = "1px solid #FECDD3";
+        cfBox.style.color = "#9F1239";
+        let advice = "";
         if (ch <= 0.5) {
-          fixMsg = "Switch <code>Credit_History</code> from 0 (Bad) to 1 (Good) to flip Node 0 to the Right Subtree (+71.7% approval lift).";
+          advice = "Restore <strong>Credit History to Good (1)</strong> to flip Root Node 0 from the Left Subtree (7.9% approval) to the Right Subtree (79.6% approval).";
         } else {
           const safeLoan = Math.floor((totalInc * 0.42) / (emi / loanFull) / 1000) * 1000;
-          fixMsg = `Reduce Loan Amount to ≤ <strong>${safeLoan.toLocaleString()}</strong> OR increase Co-Applicant Income so FOIR drops below 48%.`;
+          advice = `Reduce Loan Amount to ≤ <strong>${safeLoan.toLocaleString()}</strong> OR add Co-Applicant Income so monthly EMI drops below 48% of household income.`;
         }
-        cfBanner.innerHTML = `<strong>✕ Actionable Path to Approval:</strong> ${fixMsg}`;
+        cfBox.innerHTML = `<strong>💡 How to Qualify (Counterfactual Tip):</strong> ${advice}`;
       }
 
-      // Render Visual SVG Decision Tree & highlight active path
-      renderInteractiveDecisionTreeSVG(activePath, approved);
+      document.getElementById("active-path-bread").innerText = activePath.join(" ➔ ") + (approved ? " (APPROVED ✓)" : " (NOT APPROVED ✕)");
+      document.getElementById("active-path-bread").style.color = approved ? "#34D399" : "#FB7185";
 
-      // Auto-focus inspector on the active terminal leaf node
+      // Render Visual SVG Decision Tree & Inspect Active Terminal Leaf
+      renderInteractiveDecisionTreeSVG(activePath, approved);
       inspectTreeNode(leafId);
 
       // Update Live Applicant Mathematical Working Box
       document.getElementById("live-applicant-math-working").innerHTML = `
         <div style="color:#34D399;font-weight:700;font-size:0.7rem;letter-spacing:0.08em;margin-bottom:4px;">
-          ⚡ LIVE CART MODEL EXECUTION WORKING (CURRENT BORROWER)
+          ⚡ LIVE CART MODEL MATHEMATICAL WORKING (CURRENT BORROWER)
         </div>
-        <div style="color:#FFFFFF;font-weight:800;font-size:0.9rem;margin-bottom:6px;">
-          Active Tree Path: <code style="color:#93C5FD;">${activePath.join(" ➔ ")}</code>
+        <div style="color:#FFFFFF;font-weight:800;font-size:0.92rem;margin-bottom:6px;">
+          Active Decision Path: <code style="color:#93C5FD;">${activePath.join(" ➔ ")}</code>
         </div>
-        <div style="color:#D1D5DB;">• <strong>9-Feature Vector x:</strong> [${dep}, ${edu}, ${se}, ${appInc}, ${coInc}, ${loanK.toFixed(1)}k, ${term}, ${ch}, ${propArea}]</div>
-        <div style="color:#D1D5DB;">• <strong>Household Income:</strong> ${appInc.toLocaleString()} + ${coInc.toLocaleString()} = <strong>${totalInc.toLocaleString()}/mo</strong></div>
-        <div style="color:#D1D5DB;">• <strong>Amortizing EMI &amp; FOIR:</strong> EMI = <strong>${Math.round(emi).toLocaleString()}/mo</strong> ➔ FOIR = (${Math.round(emi)} ÷ ${totalInc}) = <strong>${foir.toFixed(1)}%</strong></div>
-        <div style="color:${approved ? '#34D399' : '#FB7185'};font-weight:700;margin-top:6px;border-top:1px dashed #374151;padding-top:6px;">
-          Final CART Output: ŷ = ${approved ? '1 (Approved ✓)' : '0 (Not Approved ✕)'} · P(Y=1 | x) = ${prob.toFixed(1)}%
+        <div style="color:#E2E8F0;">• <strong>9-Feature Vector x:</strong> [Dep=${dep}, Edu=${edu}, SelfEmp=${se}, AppInc=${appInc}, CoInc=${coInc}, Loan=${loanK.toFixed(1)}k, Term=${term}, Credit=${ch}, Area=${propArea}]</div>
+        <div style="color:#E2E8F0;">• <strong>Combined Household Income:</strong> ${appInc.toLocaleString()} + ${coInc.toLocaleString()} = <strong>${totalInc.toLocaleString()} / mo</strong></div>
+        <div style="color:#E2E8F0;">• <strong>Amortizing EMI &amp; FOIR:</strong> EMI = <strong>${Math.round(emi).toLocaleString()}/mo</strong> ➔ FOIR = (${Math.round(emi)} ÷ ${totalInc}) = <strong>${foir.toFixed(1)}%</strong></div>
+        <div style="color:${approved ? '#34D399' : '#FB7185'};font-weight:700;margin-top:6px;border-top:1px dashed #334155;padding-top:6px;">
+          Final CART Classifier Output: ŷ = ${approved ? '1 (Approved ✓)' : '0 (Not Approved ✕)'} · P(Y=1 | x) = ${prob.toFixed(1)}%
         </div>
       `;
     }
