@@ -581,6 +581,55 @@ input[type="range"].clean-slider::-webkit-slider-thumb {
   gap: 12px;
 }
 
+
+/* Smooth Scroll Offset & Interactive Scroll-Spy Pill Highlighter */
+html {
+  scroll-behavior: smooth;
+}
+
+#sec-predictor,
+#sec-tree-visualizer,
+#sec-algorithm,
+#sec-benchmarks {
+  scroll-margin-top: 135px;
+}
+
+.header-nav {
+  position: relative;
+  background: var(--bg-page);
+  padding: 5px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+}
+
+.nav-pill {
+  position: relative;
+  z-index: 2;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-body);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: color 0.22s ease, background-color 0.22s ease, transform 0.18s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.nav-pill:hover {
+  color: var(--indigo-primary);
+  background-color: var(--indigo-soft);
+  border-color: rgba(59, 73, 223, 0.35);
+  transform: translateY(-1px);
+}
+
+.nav-pill.active {
+  background-color: var(--indigo-primary);
+  color: #FFFFFF;
+  border-color: var(--indigo-primary);
+  box-shadow: 0 4px 12px rgba(59, 73, 223, 0.32);
+}
+
   </style>
 </head>
 <body>
@@ -610,11 +659,11 @@ input[type="range"].clean-slider::-webkit-slider-thumb {
         </div>
       </a>
 
-      <nav class="header-nav">
-        <a href="#sec-predictor" class="nav-pill active">01. Loan Predictor</a>
-        <a href="#sec-tree-visualizer" class="nav-pill">02. Interactive Decision Tree</a>
-        <a href="#sec-algorithm" class="nav-pill">03. Algorithm &amp; Math</a>
-        <a href="#sec-benchmarks" class="nav-pill">04. EDA &amp; Evaluation</a>
+      <nav class="header-nav" id="main-phase-nav">
+        <a href="#sec-predictor" id="nav-sec-predictor" class="nav-pill active" onclick="navigateToPhase(event, 'sec-predictor')">01. Loan Predictor</a>
+        <a href="#sec-tree-visualizer" id="nav-sec-tree-visualizer" class="nav-pill" onclick="navigateToPhase(event, 'sec-tree-visualizer')">02. Interactive Decision Tree</a>
+        <a href="#sec-algorithm" id="nav-sec-algorithm" class="nav-pill" onclick="navigateToPhase(event, 'sec-algorithm')">03. Algorithm &amp; Math</a>
+        <a href="#sec-benchmarks" id="nav-sec-benchmarks" class="nav-pill" onclick="navigateToPhase(event, 'sec-benchmarks')">04. EDA &amp; Evaluation</a>
         <a href="Printable_Documentation.html" class="nav-report-btn">📄 Read Full Report ↗</a>
       </nav>
     </div>
@@ -1235,7 +1284,21 @@ input[type="range"].clean-slider::-webkit-slider-thumb {
 
       function edgeStyle(u, v) {
         const act = isEdgeActive(u, v);
-        return `stroke="${act ? activeColor : '#CBD5E1'}" stroke-width="${act ? '3.5' : '2'}" stroke-dasharray="${act ? 'none' : '5 4'}"`;
+        return `stroke="${act ? activeColor : '#CBD5E1'}" stroke-width="${act ? '3.6' : '2'}" stroke-dasharray="${act ? 'none' : '5 4'}"`;
+      }
+
+      // Opaque rounded pill badge for edge labels so connector lines NEVER cut through any text
+      function edgeLabelBadge(cx, cy, w, text, textColor, fromId, toId) {
+        const act = isEdgeActive(fromId, toId);
+        const borderCol = act ? activeColor : "#CBD5E1";
+        const bgCol = act ? (approved ? "#F0FDFA" : "#FFF1F2") : "#FFFFFF";
+        const sw = act ? "2" : "1.2";
+        return `
+          <g transform="translate(${cx - w/2}, ${cy - 12})">
+            <rect width="${w}" height="24" rx="12" fill="${bgCol}" stroke="${borderCol}" stroke-width="${sw}" />
+            <text x="${w/2}" y="15.5" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="${textColor}">${text}</text>
+          </g>
+        `;
       }
 
       function nodeBox(id, x, y, w, h, title, subtitle, giniTxt, isLeaf = false) {
@@ -1255,63 +1318,61 @@ input[type="range"].clean-slider::-webkit-slider-thumb {
         `;
       }
 
-      // Spacious 1320 x 520 Coordinate Grid — Every single node has >= 40px horizontal clearance and 135px vertical level spacing!
       const svg = `
-        <svg viewBox="0 0 1320 520" width="100%" height="auto" style="min-width: 980px; display: block;">
-          <!-- Level 0 (y=52) to Level 1 (y=185) Connectors -->
-          <path d="M 640 88 L 260 149" fill="none" ${edgeStyle('N0','N1')} />
-          <path d="M 640 88 L 880 149" fill="none" ${edgeStyle('N0','N2')} />
-          <text x="410" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#E11D48">True (Credit = 0 · Bad)</text>
-          <text x="800" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#0D9488">False (Credit = 1 · Good)</text>
+        <svg viewBox="0 0 1320 560" width="100%" height="auto" style="min-width: 980px; display: block;">
+          <!-- LAYER 1: ALL CONNECTOR LINES (Drawn first, underneath nodes and pill badges) -->
+          <!-- Level 0 (y=52) to Level 1 (y=200) -->
+          <path d="M 640 88 L 260 164" fill="none" ${edgeStyle('N0','N1')} />
+          <path d="M 640 88 L 880 164" fill="none" ${edgeStyle('N0','N2')} />
 
-          <!-- Level 1 N1 (x=260, y=185) to Level 2 Leaves L1 (x=130, y=325) & L2 (x=365, y=325) -->
-          <path d="M 260 221 L 130 289" fill="none" ${edgeStyle('N1','L1')} />
-          <path d="M 260 221 L 365 289" fill="none" ${edgeStyle('N1','L2')} />
-          <text x="160" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#64748B">Loan≤95k &amp; Inc≥9.5k</text>
-          <text x="345" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#E11D48">Standard Adverse (92%)</text>
+          <!-- Level 1 N1 (x=260, y=200) to Level 2 L1 (x=130, y=350) & L2 (x=365, y=350) -->
+          <path d="M 260 236 L 130 314" fill="none" ${edgeStyle('N1','L1')} />
+          <path d="M 260 236 L 365 314" fill="none" ${edgeStyle('N1','L2')} />
 
-          <!-- Level 1 N2 (x=880, y=185) to Level 2 N5 (x=660, y=325) & N6 (x=1090, y=325) -->
-          <path d="M 880 221 L 660 289" fill="none" ${edgeStyle('N2','N5')} />
-          <path d="M 880 221 L 1090 289" fill="none" ${edgeStyle('N2','N6')} />
-          <text x="735" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="#3B49DF">≤ 310k (Retail Loan)</text>
-          <text x="1020" y="256" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="700" fill="#D97706">&gt; 310k (Jumbo Loan)</text>
+          <!-- Level 1 N2 (x=880, y=200) to Level 2 N5 (x=660, y=350) & N6 (x=1090, y=350) -->
+          <path d="M 880 236 L 660 314" fill="none" ${edgeStyle('N2','N5')} />
+          <path d="M 880 236 L 1090 314" fill="none" ${edgeStyle('N2','N6')} />
 
-          <!-- Level 2 N5 (x=660, y=325) to Level 3 Leaves L12 (x=545, y=465) & L15 (x=765, y=465) -->
-          <path d="M 660 361 L 545 429" fill="none" ${edgeStyle('N5','L12')} />
-          <path d="M 660 361 L 765 429" fill="none" ${edgeStyle('N5','L15')} />
-          <text x="575" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#0D9488">FOIR ≤ 55%</text>
-          <text x="740" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#E11D48">FOIR &gt; 55%</text>
+          <!-- Level 2 N5 (x=660, y=350) to Level 3 L12 (x=545, y=495) & L15 (x=765, y=495) -->
+          <path d="M 660 386 L 545 460" fill="none" ${edgeStyle('N5','L12')} />
+          <path d="M 660 386 L 765 460" fill="none" ${edgeStyle('N5','L15')} />
 
-          <!-- Level 2 N6 (x=1090, y=325) to Level 3 Leaves L19 (x=985, y=465) & L20 (x=1205, y=465) -->
-          <path d="M 1090 361 L 985 429" fill="none" ${edgeStyle('N6','L19')} />
-          <path d="M 1090 361 L 1205 429" fill="none" ${edgeStyle('N6','L20')} />
-          <text x="1010" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#0D9488">Inc ≥ 8.5k</text>
-          <text x="1175" y="398" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#E11D48">Inc &lt; 8.5k</text>
+          <!-- Level 2 N6 (x=1090, y=350) to Level 3 L19 (x=985, y=495) & L20 (x=1205, y=495) -->
+          <path d="M 1090 386 L 985 460" fill="none" ${edgeStyle('N6','L19')} />
+          <path d="M 1090 386 L 1205 460" fill="none" ${edgeStyle('N6','L20')} />
 
-          <!-- LEVEL 0: ROOT NODE N0 (x=640, y=52, w=300, h=72) -->
+          <!-- LAYER 2:OPAQUE ROUNDED PILL BADGES FOR ALL EDGE LABELS (Lines never cut through text!) -->
+          ${edgeLabelBadge(435, 126, 178, 'True (Credit = 0 · Bad)', '#E11D48', 'N0', 'N1')}
+          ${edgeLabelBadge(775, 126, 184, 'False (Credit = 1 · Good)', '#0D9488', 'N0', 'N2')}
+
+          ${edgeLabelBadge(172, 275, 152, 'Loan≤95k & Inc≥9.5k', '#475569', 'N1', 'L1')}
+          ${edgeLabelBadge(340, 275, 166, 'Standard Adverse (92%)', '#E11D48', 'N1', 'L2')}
+
+          ${edgeLabelBadge(750, 275, 164, '≤ 310k (Retail Loan)', '#3B49DF', 'N2', 'N5')}
+          ${edgeLabelBadge(1005, 275, 164, '> 310k (Jumbo Loan)', '#D97706', 'N2', 'N6')}
+
+          ${edgeLabelBadge(585, 422, 110, 'FOIR ≤ 55%', '#0D9488', 'N5', 'L12')}
+          ${edgeLabelBadge(730, 422, 110, 'FOIR > 55%', '#E11D48', 'N5', 'L15')}
+
+          ${edgeLabelBadge(1020, 422, 110, 'Inc ≥ 8.5k', '#0D9488', 'N6', 'L19')}
+          ${edgeLabelBadge(1165, 422, 110, 'Inc < 8.5k', '#E11D48', 'N6', 'L20')}
+
+          <!-- LAYER 3: DECISION TREE NODE BOXES -->
           ${nodeBox('N0', 640, 52, 300, 72, 'NODE 0 (ROOT SPLIT)', 'Credit_History <= 0.5', 'n=614 · Gini=0.4298 · ΔGini=+0.1256')}
 
-          <!-- LEVEL 1: N1 (x=260, y=185, w=260) & N2 (x=880, y=185, w=270) -->
-          ${nodeBox('N1', 260, 185, 260, 72, 'NODE 1 (ADVERSE BUREAU)', 'Loan <= 95k & Income >= 9.5k', 'n=89 (7 Y / 82 N) · Gini=0.1449')}
-          ${nodeBox('N2', 880, 185, 270, 72, 'NODE 2 (CLEAN BUREAU)', 'LoanAmount (k) <= 310.0k', 'n=525 (415 Y / 110 N) · Gini=0.3312')}
+          ${nodeBox('N1', 260, 200, 260, 72, 'NODE 1 (ADVERSE BUREAU)', 'Loan <= 95k & Income >= 9.5k', 'n=89 (7 Y / 82 N) · Gini=0.1449')}
+          ${nodeBox('N2', 880, 200, 270, 72, 'NODE 2 (CLEAN BUREAU)', 'LoanAmount (k) <= 310.0k', 'n=525 (415 Y / 110 N) · Gini=0.3312')}
 
-          <!-- LEVEL 2 (Under N1): L1 (x=130, w=200 -> [30..230]) & L2 (x=365, w=210 -> [260..470]) -> 30px gap! -->
-          ${nodeBox('L1', 130, 325, 200, 72, 'LEAF L1: APPROVED ✓', 'Low-Debt Override', 'n=7 · Gini=0.2449', true)}
-          ${nodeBox('L2', 365, 325, 210, 72, 'LEAF L2: NOT APPROVED ✕', 'Adverse Credit (P=7.9%)', 'n=82/89 · Gini=0.1449', true)}
+          ${nodeBox('L1', 130, 350, 200, 72, 'LEAF L1: APPROVED ✓', 'Low-Debt Override', 'n=7 · Gini=0.2449', true)}
+          ${nodeBox('L2', 365, 350, 210, 72, 'LEAF L2: NOT APPROVED ✕', 'Adverse Credit (P=7.9%)', 'n=82/89 · Gini=0.1449', true)}
 
-          <!-- LEVEL 2 (Under N2): N5 (x=660, w=260 -> [530..790]) & N6 (x=1090, w=260 -> [960..1220]) -> 170px gap! -->
-          ${nodeBox('N5', 660, 325, 260, 72, 'NODE 5 (REPAYMENT GATE)', 'Income >= 2.2k & FOIR <= 55%', 'n=488 · Gini=0.2984')}
-          ${nodeBox('N6', 1090, 325, 260, 72, 'NODE 6 (JUMBO CAPACITY)', 'Income >= 8.5k & FOIR <= 48%', 'n=37 · Gini=0.4420')}
+          ${nodeBox('N5', 660, 350, 260, 72, 'NODE 5 (REPAYMENT GATE)', 'Income >= 2.2k & FOIR <= 55%', 'n=488 · Gini=0.2984')}
+          ${nodeBox('N6', 1090, 350, 260, 72, 'NODE 6 (JUMBO CAPACITY)', 'Income >= 8.5k & FOIR <= 48%', 'n=37 · Gini=0.4420')}
 
-          <!-- LEVEL 3 LEAVES:
-               L12: x=545, w=190 -> [450..640]
-               L15: x=765, w=190 -> [670..860] (30px gap!)
-               L19: x=985, w=190 -> [890..1080] (30px gap!)
-               L20: x=1205, w=190 -> [1110..1300] (30px gap!) -->
-          ${nodeBox('L12', 545, 465, 190, 70, 'LEAF L12: APPROVED ✓', 'Prime Retail (P=90.8%)', 'n=442 · Gini=0.2180', true)}
-          ${nodeBox('L15', 765, 465, 190, 70, 'LEAF L15: REJECTED ✕', 'High FOIR > 55%', 'n=46 · Gini=0.3640', true)}
-          ${nodeBox('L19', 985, 465, 190, 70, 'LEAF L19: APPROVED ✓', 'Jumbo Sanction (P=78.5%)', 'n=19 · Gini=0.3370', true)}
-          ${nodeBox('L20', 1205, 465, 190, 70, 'LEAF L20: REJECTED ✕', 'Jumbo Overload (P=21.4%)', 'n=18 · Gini=0.3360', true)}
+          ${nodeBox('L12', 545, 495, 190, 70, 'LEAF L12: APPROVED ✓', 'Prime Retail (P=90.8%)', 'n=442 · Gini=0.2180', true)}
+          ${nodeBox('L15', 765, 495, 190, 70, 'LEAF L15: REJECTED ✕', 'High FOIR > 55%', 'n=46 · Gini=0.3640', true)}
+          ${nodeBox('L19', 985, 495, 190, 70, 'LEAF L19: APPROVED ✓', 'Jumbo Sanction (P=78.5%)', 'n=19 · Gini=0.3370', true)}
+          ${nodeBox('L20', 1205, 495, 190, 70, 'LEAF L20: REJECTED ✕', 'Jumbo Overload (P=21.4%)', 'n=18 · Gini=0.3360', true)}
         </svg>
       `;
 
@@ -1470,8 +1531,62 @@ input[type="range"].clean-slider::-webkit-slider-thumb {
       `;
     }
 
+    const PHASE_IDS = ["sec-predictor", "sec-tree-visualizer", "sec-algorithm", "sec-benchmarks"];
+    let isManualScrolling = false;
+    let scrollTimeout = null;
+
+    function setActivePhasePill(secId) {
+      document.querySelectorAll("#main-phase-nav .nav-pill").forEach(el => {
+        el.classList.toggle("active", el.id === "nav-" + secId);
+      });
+    }
+
+    function navigateToPhase(event, secId) {
+      if (event) event.preventDefault();
+      const target = document.getElementById(secId);
+      const header = document.querySelector(".site-header");
+      if (!target) return;
+
+      isManualScrolling = true;
+      setActivePhasePill(secId);
+
+      const headerHeight = header ? header.offsetHeight : 86;
+      const topPos = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+      window.scrollTo({ top: Math.max(0, topPos), behavior: "smooth" });
+
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => { isManualScrolling = false; }, 750);
+    }
+
+    function updateActivePhaseOnScroll() {
+      if (isManualScrolling) return;
+      const header = document.querySelector(".site-header");
+      const threshold = (header ? header.offsetHeight : 86) + 90;
+
+      // If near the very bottom of the page, highlight Phase 4
+      if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 60)) {
+        setActivePhasePill("sec-benchmarks");
+        return;
+      }
+
+      let currentId = PHASE_IDS[0];
+      for (const id of PHASE_IDS) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= threshold) {
+            currentId = id;
+          }
+        }
+      }
+      setActivePhasePill(currentId);
+    }
+
+    window.addEventListener("scroll", updateActivePhaseOnScroll, { passive: true });
+
     window.addEventListener("DOMContentLoaded", () => {
       evaluateLiveApplication();
+      updateActivePhaseOnScroll();
     });
   </script>
 </body>

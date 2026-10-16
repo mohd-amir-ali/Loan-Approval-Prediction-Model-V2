@@ -573,3 +573,52 @@ input[type="range"].clean-slider::-webkit-slider-thumb {
   flex-wrap: wrap;
   gap: 12px;
 }
+
+
+/* Smooth Scroll Offset & Interactive Scroll-Spy Pill Highlighter */
+html {
+  scroll-behavior: smooth;
+}
+
+#sec-predictor,
+#sec-tree-visualizer,
+#sec-algorithm,
+#sec-benchmarks {
+  scroll-margin-top: 135px;
+}
+
+.header-nav {
+  position: relative;
+  background: var(--bg-page);
+  padding: 5px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+}
+
+.nav-pill {
+  position: relative;
+  z-index: 2;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-body);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: color 0.22s ease, background-color 0.22s ease, transform 0.18s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.nav-pill:hover {
+  color: var(--indigo-primary);
+  background-color: var(--indigo-soft);
+  border-color: rgba(59, 73, 223, 0.35);
+  transform: translateY(-1px);
+}
+
+.nav-pill.active {
+  background-color: var(--indigo-primary);
+  color: #FFFFFF;
+  border-color: var(--indigo-primary);
+  box-shadow: 0 4px 12px rgba(59, 73, 223, 0.32);
+}
