@@ -102,18 +102,31 @@ model.fit(x_train, y_train)
 
 ---
 
-## 6. Quick Start & Deployment
+## 6. Quick Start & Repository Structure
 
-### Option A: Zero-Install Browser Launch (or GitHub Pages)
-Double-click **`index.html`** or **`Launch_Loan_Prediction_App.html`** in Finder to launch the full interactive V2 workbench directly in Google Chrome or Safari.
+### Option A: Instant Browser / GitHub Pages Launch
+Open **`index.html`** in any browser (or enable **GitHub Pages** on the `main` branch) to run the full interactive V2 workbench with zero installation.
 
 ### Option B: Local Python Server (Port `5065`)
-Double-click **`Run_Loan_App.command`** on macOS, or run from Terminal:
 ```bash
-chmod +x start.sh
-./start.sh
+python3 app.py
 ```
-This starts `app.py` (supporting both Flask and a zero-dependency standard-library HTTP server fallback) at **`http://127.0.0.1:5065`**.
+Starts the local server (supporting both Flask and a zero-dependency Python HTTP fallback) at **`http://127.0.0.1:5065`**.
+
+```text
+Loan-Approval-Prediction-Model-V2/
+├── index.html                        # Interactive V2 Web Workbench (GitHub Pages entry)
+├── app.py                            # Flask + Zero-Dependency Python Server (Port 5065)
+├── loan_cart_engine.py               # CART Decision Tree, EMI/FOIR & Counterfactual Engine
+├── DS_Project.ipynb                  # Original Data Science Training & EDA Notebook
+├── DS_Project.pkl                    # Serialized DecisionTreeClassifier(max_leaf_nodes=25)
+├── LoanApprovalPrediction.csv        # 614-row Historical Retail Loan Dataset
+├── Printable_Documentation.html      # Print / Save-as-PDF Technical Monograph
+├── WORKFLOW_DOCUMENTATION.md         # Step-by-step V2 Architecture & Math Proof
+├── README.md                         # Project Documentation & V1-to-V2 Comparison
+├── static/styles/style.css           # Royal Indigo & Alabaster-Slate V2 Stylesheet
+└── templates/index.html              # Flask Template Entry Point
+```
 
 ---
 
