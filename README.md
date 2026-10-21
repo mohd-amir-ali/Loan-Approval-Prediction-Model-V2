@@ -1,30 +1,43 @@
-# 🏦 CRED-TREE // Explainable CART Decision Tree Loan Approval & Credit Risk Engine
+# 🏦 LOAN APPROVAL PREDICTION MODEL V2 // Explainable CART Decision Tree Workbench
 
-> **Data Science Internship Project — Automated Retail Loan Underwriting, Root-to-Leaf Gini Path Tracing & Fair-Lending Audit**
-> *Completed at **Delta Sigma Technologies** in collaboration with **Cephei Consultants, Australia** (Certificate ID: `23DST1DSI22`) · Submitted to **Osmania University** (Lords Institute of Engineering & Technology)*
+> **Version 2.0 Production & Explainable AI Upgrade of the 2023 Data Science Internship Project**
+> *Re-architected from the original [V1 Internship Baseline (`mohd-amir-ali/DS`)](https://github.com/mohd-amir-ali/DS) completed at **Delta Sigma Technologies** & **Cephei Consultants, Australia** (Certificate ID: `23DST1DSI22`) · **Osmania University** (Lords Institute of Engineering & Technology)*
 
-[![Author](https://img.shields.io/badge/Author-Mohd%20Amir%20Ali-38BDF8?style=flat-square&labelColor=0B132B)](https://techwithamir.com)
-[![Algorithm](https://img.shields.io/badge/Algorithm-CART%20DecisionTreeClassifier(max__leaf__nodes%3D25)-2563EB?style=flat-square&labelColor=0B132B)](#2-core-machine-learning-algorithm--mathematical-proof)
-[![Accuracy](https://img.shields.io/badge/Accuracy-86.56%25%20Train%20%7C%2082.80%25%20Test-10B981?style=flat-square&labelColor=0B132B)](#4-model-evaluation--multi-model-benchmark)
-[![Compliance](https://img.shields.io/badge/Fair%20Lending-Gender%20%26%20Marital%20Bias%20Excluded-F59E0B?style=flat-square&labelColor=0B132B)](#3-fair-lending-feature-engineering--dataset-eda-614-loans)
+[![Version](https://img.shields.io/badge/Release-Loan%20Prediction%20Model%20V2.0-3B49DF?style=flat-square&labelColor=0F172A)](#1-why-version-20-v1-internship-baseline-vs-v2-explainable-workbench)
+[![Author](https://img.shields.io/badge/Author-Mohd%20Amir%20Ali-38BDF8?style=flat-square&labelColor=0F172A)](https://techwithamir.com)
+[![Algorithm](https://img.shields.io/badge/Algorithm-CART%20DecisionTreeClassifier(max__leaf__nodes%3D25)-2563EB?style=flat-square&labelColor=0F172A)](#3-core-machine-learning-algorithm--mathematical-proof)
+[![Accuracy](https://img.shields.io/badge/Accuracy-86.56%25%20Train%20%7C%2082.80%25%20Test-0D9488?style=flat-square&labelColor=0F172A)](#5-model-evaluation--multi-model-benchmark)
 
 ---
 
-## 1. Executive Summary
+## 1. Why Version 2.0? (`V1` Internship Baseline vs. `V2` Explainable Workbench)
+
+During my 2023 Data Science Internship, the original **[V1 Loan Approval Prediction repository (`mohd-amir-ali/DS`)](https://github.com/mohd-amir-ali/DS)** established the foundational `DecisionTreeClassifier(max_leaf_nodes=25)` model and a minimal 300px Flask form (`box1`–`box9`). While keeping the original `V1` repository preserved as a historical academic record, **Loan Approval Prediction Model V2** is a complete ground-up engineering and explainability upgrade:
+
+| Dimension | V1 Baseline (`mohd-amir-ali/DS` · 2023) | Loan Approval Prediction Model V2 (Current Repo) |
+| :--- | :--- | :--- |
+| **Preprocessing & Imputation** | Applied `LabelEncoder` before `.fillna(mean)`, which rank-encoded continuous `LoanAmount` values and turned `NaN` in `Credit_History` into a 3rd class (`2`). | **Fixed Imputation & Smart Scale Normalization:** Imputes missing values properly using median/mode and auto-normalizes `LoanAmount` whether entered in full currency (`150000`) or dataset thousands (`150`). |
+| **Algorithmic Explainability** | Output only a single binary string (`Approved` or `Not Approved`) with zero visibility into how the tree reached its verdict. | **Interactive Visual SVG Decision Tree (`1320×560`):** Highlights the live root-to-leaf boolean path (`N0 → N2 → N5 → L12`) and lets users click any node to inspect its exact **Gini Impurity** and **Information Gain ($\Delta\text{Gini}$)** equations. |
+| **Financial Stress Testing** | Raw inputs only; no amortization or debt-service calculation. | **Live EMI & FOIR Engine:** Computes Monthly Amortizing EMI (`8.75% p.a.`), Combined Household Income, Fixed Obligation to Income Ratio (`FOIR %`), and Loan-to-Annual-Income (`LTI`) multiplier. |
+| **Borrower Actionability** | No guidance for rejected applicants. | **Counterfactual Path-to-Approval Advisor:** Calculates the exact minimum loan reduction, co-applicant income addition, or bureau rehabilitation needed to flip a `Not Approved` verdict to `Approved`. |
+| **Deployment Architecture** | Required local Python + specific legacy `scikit-learn` pickle version to load `DS_Project.pkl`. | **Zero-Install HTML5 + Dual-Mode Python Server:** Runs instantly in any browser (and on **GitHub Pages**) OR via `app.py` (supports both Flask and a zero-dependency standard-library HTTP server fallback on Port `5065`). |
+
+---
+
+## 2. Executive Summary
 
 Financial institutions evaluate thousands of retail mortgage and personal loan applications daily. Manual underwriting is slow and prone to subjective bias, while opaque "black-box" neural networks fail regulatory explainability requirements under **Basel II/III Internal Ratings-Based (IRB)** frameworks and **Equal Credit Opportunity** adverse-action disclosure laws.
 
-**CRED-TREE** solves this by pairing a **Best-First Pruned CART Decision Tree Classifier (`DecisionTreeClassifier(max_leaf_nodes=25, criterion='gini')`)** trained on **614 historical loan records (`LoanApprovalPrediction.csv`)** with an interactive **Explainable Credit Underwriting Web Application**:
+**Loan Approval Prediction Model V2** pairs a **Best-First Pruned CART Decision Tree Classifier (`DecisionTreeClassifier(max_leaf_nodes=25, criterion='gini')`)** trained on **614 historical loan records (`LoanApprovalPrediction.csv`)** with an interactive **Explainable Credit Underwriting Workbench**:
 
 - **Instant White-Box Verdicts (`86.56%` Train / `82.80%` Test Accuracy):** Evaluates 9 bias-audited borrower attributes (`box1`–`box9`) and outputs both the binary decision (`Approved` / `Not Approved`) and the exact **Root-to-Leaf CART Gini Split Path**.
-- **Real-Time Financial Stress Testing:** Computes **Monthly Amortizing EMI** (at `8.75% p.a.`), **Combined Household Income**, **Fixed Obligation to Income Ratio (FOIR %)**, and **Loan-to-Annual-Income Multiplier (LTI)**.
-- **Counterfactual "Actionable Path to Approval" Advisor:** Automatically calculates the minimum adjustments (e.g., bureau rehabilitation, loan principal reduction, or co-applicant income addition) required for a rejected borrower to cross the tree's approval boundary.
+- **Interactive Visual Decision Tree Flowchart:** Live SVG tree diagram where every node and branch badge updates dynamically as you adjust borrower sliders or load the verified **Internship Report Page 30 (Approved)** and **Page 31 (Not Approved)** test cases.
 
 ---
 
-## 2. Core Machine Learning Algorithm & Mathematical Proof
+## 3. Core Machine Learning Algorithm & Mathematical Proof
 
-### 2.1 Algorithm Specification: Best-First Pruned CART Classifier
+### 3.1 Algorithm Specification: Best-First Pruned CART Classifier
 In `DS_Project.ipynb` (Cells 41–46), the dataset is partitioned into **85% Training (`521` loans)** and **15% Testing (`93` loans)** using `train_test_split(x, y, test_size=0.15, random_state=5)` and trained with:
 
 ```python
@@ -33,7 +46,7 @@ model = DecisionTreeClassifier(max_leaf_nodes=25, criterion="gini")
 model.fit(x_train, y_train)
 ```
 
-### 2.2 Step-by-Step Mathematical Formulation
+### 3.2 Step-by-Step Mathematical Formulation
 
 1. **Node Gini Impurity ($G(t)$):**
    At any node $t$ containing $N_t$ applications with class probabilities $p(c \mid t)$ for $c \in \{0\text{ (Rejected)}, 1\text{ (Approved)}\}$:
@@ -55,13 +68,13 @@ model.fit(x_train, y_train)
 
 ---
 
-## 3. Fair-Lending Feature Engineering & Dataset EDA (`614` Loans)
+## 4. Fair-Lending Feature Engineering & Dataset EDA (`614` Loans)
 
-### 3.1 Why `Loan_ID`, `Gender`, and `Married` Are Excluded
+### 4.1 Why `Loan_ID`, `Gender`, and `Married` Are Excluded
 - **`Loan_ID`:** Unique row identifier (`LP001002`–`LP002990`) with zero generalizing signal.
 - **`Gender` & `Married` (`df.drop(["Gender", "Married"], axis=1)`):** Excluded to enforce **Fair-Lending & Equal Credit Opportunity** compliance. Empirical correlation analysis confirms negligible linear association with loan approval (`r = 0.02` and `r = 0.09`), while dual-income household capacity is captured objectively through `CoapplicantIncome`.
 
-### 3.2 The 9-Feature Input Vector (`box1` – `box9`)
+### 4.2 The 9-Feature Input Vector (`box1` – `box9`)
 
 | Form ID | Feature Name | Encoding / Units | Gini Importance | Empirical Insight (`n = 614`) |
 | :--- | :--- | :--- | :---: | :--- |
@@ -77,11 +90,11 @@ model.fit(x_train, y_train)
 
 ---
 
-## 4. Model Evaluation & Multi-Model Benchmark
+## 5. Model Evaluation & Multi-Model Benchmark
 
 | Model Configuration | Train Accuracy | Test Accuracy (`n=93`) | Precision | Recall | F1-Score | Regulatory Interpretability |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **CART Decision Tree (`max_leaf_nodes=25`) [Deployed]** | **86.56%** | **82.80%** | **84.10%** | 93.85% | **88.71%** | **100% White-Box (Exact Gini Rule Path)** |
+| **CART Decision Tree (`max_leaf_nodes=25`) [Deployed V2]** | **86.56%** | **82.80%** | **84.10%** | 93.85% | **88.71%** | **100% White-Box (Exact Gini Rule Path)** |
 | **CART Decision Tree (`max_depth=5, min_samples_leaf=5`)** | 84.84% | 81.72% | 83.10% | 92.31% | 87.46% | 100% White-Box (Depth-Pruned) |
 | **Random Forest Classifier (`100` Trees)** | 92.13% | 81.72% | 83.82% | 90.77% | 87.16% | Medium (Ensemble Feature Weights) |
 | **Gradient Boosting / XGBoost** | 89.44% | 80.65% | 82.61% | 90.77% | 86.50% | Low (Requires Post-Hoc SHAP) |
@@ -89,10 +102,10 @@ model.fit(x_train, y_train)
 
 ---
 
-## 5. Quick Start & Deployment
+## 6. Quick Start & Deployment
 
 ### Option A: Zero-Install Browser Launch (or GitHub Pages)
-Double-click **`index.html`** or **`Launch_Loan_Prediction_App.html`** in Finder to launch the full 4-tab interactive underwriting terminal directly in Google Chrome or Safari.
+Double-click **`index.html`** or **`Launch_Loan_Prediction_App.html`** in Finder to launch the full interactive V2 workbench directly in Google Chrome or Safari.
 
 ### Option B: Local Python Server (Port `5065`)
 Double-click **`Run_Loan_App.command`** on macOS, or run from Terminal:
@@ -101,25 +114,6 @@ chmod +x start.sh
 ./start.sh
 ```
 This starts `app.py` (supporting both Flask and a zero-dependency standard-library HTTP server fallback) at **`http://127.0.0.1:5065`**.
-
-### Repository Structure
-```text
-DS-main/
-├── index.html                        # Primary 4-tab interactive underwriting platform (GitHub Pages ready)
-├── Launch_Loan_Prediction_App.html   # Desktop standalone quick-launch mirror
-├── Printable_Documentation.html      # Print / Save-as-PDF Technical Monograph & Workflow Report
-├── WORKFLOW_DOCUMENTATION.md         # Detailed step-by-step system workflow & mathematical proof
-├── README.md                         # Project overview & quick-start guide
-├── app.py                            # Dual-mode Flask + zero-dependency HTTP server (Port 5065)
-├── loan_cart_engine.py               # Pure-Python + Sklearn CART Decision Tree & Counterfactual Engine
-├── DS_Project.ipynb                  # Original Data Science Internship Jupyter Notebook
-├── DS_Project.pkl                    # Serialized DecisionTreeClassifier(max_leaf_nodes=25) artifact
-├── LoanApprovalPrediction.csv        # 614-row historical retail loan dataset
-├── Run_Loan_App.command              # One-click macOS launcher
-├── start.sh                          # Terminal launcher script
-├── static/styles/style.css           # Institutional FinTech Slate Navy & Royal Blue UI stylesheet
-└── templates/index.html              # Flask template entry point
-```
 
 ---
 
