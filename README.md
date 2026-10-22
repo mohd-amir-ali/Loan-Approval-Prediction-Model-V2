@@ -1,12 +1,23 @@
 # 🏦 LOAN APPROVAL PREDICTION MODEL V2 // Explainable CART Decision Tree Workbench
 
-> **Version 2.0 Production & Explainable AI Upgrade of the 2023 Data Science Internship Project**
-> *Re-architected from the original [V1 Internship Baseline (`mohd-amir-ali/DS`)](https://github.com/mohd-amir-ali/DS) completed at **Delta Sigma Technologies** & **Cephei Consultants, Australia** (Certificate ID: `23DST1DSI22`) · **Osmania University** (Lords Institute of Engineering & Technology)*
+[![Live Interactive Demo](https://img.shields.io/badge/%F0%9F%9A%80%20LIVE%20INTERACTIVE%20DEMO-LAUNCH%20IN%20BROWSER-4F46E5?style=for-the-badge&labelColor=1E1B4B)](https://mohd-amir-ali.github.io/Loan-Approval-Prediction-Model-V2/)
+[![GitHub Codespaces](https://img.shields.io/badge/%E2%98%81%EF%B8%8F%20GITHUB%20CODESPACES-RUN%20PYTHON%20BACKEND-18181B?style=for-the-badge&logo=github)](https://codespaces.new/mohd-amir-ali/Loan-Approval-Prediction-Model-V2)
 
-[![Version](https://img.shields.io/badge/Release-Loan%20Prediction%20Model%20V2.0-3B49DF?style=flat-square&labelColor=0F172A)](#1-why-version-20-v1-internship-baseline-vs-v2-explainable-workbench)
-[![Author](https://img.shields.io/badge/Author-Mohd%20Amir%20Ali-38BDF8?style=flat-square&labelColor=0F172A)](https://techwithamir.com)
-[![Algorithm](https://img.shields.io/badge/Algorithm-CART%20DecisionTreeClassifier(max__leaf__nodes%3D25)-2563EB?style=flat-square&labelColor=0F172A)](#3-core-machine-learning-algorithm--mathematical-proof)
-[![Accuracy](https://img.shields.io/badge/Accuracy-86.56%25%20Train%20%7C%2082.80%25%20Test-0D9488?style=flat-square&labelColor=0F172A)](#5-model-evaluation--multi-model-benchmark)
+> **Data Science Internship Project (Version 2.0 Explainable AI Release)**
+> **Author:** Mohd Amir Ali ([techwithamir.com](https://techwithamir.com)) · Roll No: `160920733019`
+> **Internship Organization:** Delta Sigma Technologies & Cephei Consultants, Australia (`23DST1DSI22`)
+> **Institution:** Lords Institute of Engineering & Technology (Affiliated to Osmania University, Hyderabad)
+> **Lineage:** Re-architected from the [2023 V1 Internship Baseline (`mohd-amir-ali/DS`)](https://github.com/mohd-amir-ali/DS)
+
+---
+
+## ⚡ Run Instantly Without Cloning
+
+Anyone can explore and test the entire **Loan Approval Prediction Model V2** platform directly in their browser without downloading or cloning the repository:
+
+1. 🚀 **[Launch Live Interactive Web App (GitHub Pages)](https://mohd-amir-ali.github.io/Loan-Approval-Prediction-Model-V2/)**: Experience the full Explainable Credit Underwriting Workbench, test the verified **Internship Report Page 30 (Approved)** and **Page 31 (Not Approved)** presets, drag income/loan sliders, and inspect the live **1320×560 Interactive SVG Decision Tree** directly in your browser.
+2. 📄 **[Read Printable Workflow & Algorithmic Monograph (GitHub Pages)](https://mohd-amir-ali.github.io/Loan-Approval-Prediction-Model-V2/Printable_Documentation.html)**: View or print (`Cmd/Ctrl + P` → *Save as PDF*) the complete technical report and mathematical derivations.
+3. ☁️ **[Launch Full Python + Flask Backend in GitHub Codespaces](https://codespaces.new/mohd-amir-ali/Loan-Approval-Prediction-Model-V2)**: Boots a pre-configured cloud container running `app.py` and `loan_cart_engine.py` on port `5065` in one click.
 
 ---
 
@@ -102,12 +113,9 @@ model.fit(x_train, y_train)
 
 ---
 
-## 6. Quick Start & Repository Structure
+## 6. Local Execution & Repository Structure
 
-### Option A: Instant Browser / GitHub Pages Launch
-Open **`index.html`** in any browser (or enable **GitHub Pages** on the `main` branch) to run the full interactive V2 workbench with zero installation.
-
-### Option B: Local Python Server (Port `5065`)
+### Run Local Python Server (Port `5065`)
 ```bash
 python3 app.py
 ```
@@ -115,9 +123,11 @@ Starts the local server (supporting both Flask and a zero-dependency Python HTTP
 
 ```text
 Loan-Approval-Prediction-Model-V2/
+├── .devcontainer/devcontainer.json   # One-click GitHub Codespaces cloud configuration
 ├── index.html                        # Interactive V2 Web Workbench (GitHub Pages entry)
 ├── app.py                            # Flask + Zero-Dependency Python Server (Port 5065)
 ├── loan_cart_engine.py               # CART Decision Tree, EMI/FOIR & Counterfactual Engine
+├── requirements.txt                  # Python package dependencies
 ├── DS_Project.ipynb                  # Original Data Science Training & EDA Notebook
 ├── DS_Project.pkl                    # Serialized DecisionTreeClassifier(max_leaf_nodes=25)
 ├── LoanApprovalPrediction.csv        # 614-row Historical Retail Loan Dataset

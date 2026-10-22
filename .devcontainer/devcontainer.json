@@ -1,0 +1,13 @@
+{
+  "name": "Loan Approval Prediction Model V2 — CART Decision Tree Workbench",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "postCreateCommand": "pip install -r requirements.txt",
+  "postStartCommand": "nohup python3 app.py > flask.log 2>&1 &",
+  "forwardPorts": [5065],
+  "portsAttributes": {
+    "5065": {
+      "label": "Loan Approval Prediction V2 WebApp",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}
